@@ -1,0 +1,63 @@
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #eae8e7;
+	// background: linear-gradient(to bottom, #eae8e7, #F6F6F6);
+	// background:	-webkit-gradient(linear, 0 0, 0 bottom, from(#eae8e7), to(#fff);
+	/* background:-webkit-gradient(linear, 0 0, 0 bottom, from(#ff0000), to(rgba(0, 0, 255, 0.5)));  */
+}
+a {
+	text-decoration: none;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+li {
+	list-style: none;
+}
+
+
+  //滚动条
+  ::-webkit-scrollbar {
+    /*滚动条整体部分，其中的属性有width,height,background,border（就和一个块级元素一样）等*/
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 5px; //纵向滚动条
+    height: 5px; //纵向滚动条
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-button {
+    /*滚动条两端的按钮。可以用display:none让其不显示，也可以添加背景图片，颜色改变显示效果。*/
+    display: none;
+  }
+
+  ::-webkit-scrollbar-track {
+    /*外层轨道。可以用display:none让其不显示，也可以添加背景图片，颜色改变显示效果。*/
+    display: none;
+    //background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    /*内层轨道，滚动条中间部分（除去）。*/
+    //background-color: rgba(255, 255, 255, .1);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    /*滚动条里面可以拖动的那部分*/
+    // background-color: rgba(255, 255, 255, 0.5);
+    background-color: #9530a3;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-corner {
+    border-radius: 10px;
+  }
+
+  ::-webkit-resizer {
+    /*定义右下角拖动块的样式*/
+    border-radius: 10px;
+  }
