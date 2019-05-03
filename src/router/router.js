@@ -11,6 +11,7 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+    { path: '/', redirect: '/homePage' },
     {
       path: "/homePage",
       name: "homePage",
