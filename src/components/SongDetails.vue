@@ -8,7 +8,7 @@
     <div class="mark"></div>
     <div class="songInfo">
       <div class="songImg" v-if="this.prevPlaySong">
-        <img :src="this.prevPlaySong.al.picUrl" alt srcset>
+        <img v-lazy="this.prevPlaySong.al.picUrl" alt srcset>
       </div>
       <div class="songItem">
         <span class="songer">{{this.prevPlaySong.ar[0].name}}</span>

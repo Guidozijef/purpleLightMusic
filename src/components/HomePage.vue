@@ -1,19 +1,19 @@
 <template>
-  <div class="homePage-container">
+  <div class="homePage-container" ref="homePage">
     <div class="like-container">
       <span class="title">{{hello}}</span>
       <div class="history">上次播放</div>
-      <ul class="likeBox" v-if="this.historyList">
+      <ul class="likeBox" v-if="historyData">
         <li
           class="itemLike"
-          v-for="item in this.historyList"
+          v-for="item in historyData"
           :key="item.id"
           @click="goSongDetails(item.id)"
         >
-          <div class="imgLike">
-            <img :src="item.al.picUrl" alt>
+          <div class="imgLike" v-if="item.al">
+            <img v-lazy="item.al.picUrl" alt>
           </div>
-          <span class="imgTitle" :title="item.name">{{item.name}}</span>
+          <span class="imgTitle" v-if="item.name" :title="item.name">{{item.name}}</span>
         </li>
       </ul>
     </div>
@@ -26,27 +26,46 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-      hello: ""
+      hello: "",
+      historyData: []
     };
   },
   computed: {
     ...mapGetters(["likeSowList", "historyList"])
   },
   created() {
+    // 清除历史记录中的空对象
+    if (this.historyList) {
+      this.historyList.forEach((ele, index) => {
+        if (ele.name != undefined) {
+          this.historyData.push(ele);
+        }
+      });
+    }
     let time = new Date().getHours(); //获取当前小时数(0-23)
-    if (0 < time < 5) {
+    if (0 < time && time < 5) {
       this.hello = "晚上好";
-    } else if (5 <= time < 11) {
+    } else if (5 <= time && time < 11) {
       this.hello = "早上好";
-    } else if (11 <= time < 14) {
+    } else if (11 <= time && time < 14) {
       this.hello = "中午好";
-    } else if (14 <= time < 18) {
+    } else if (14 < time && time < 18) {
       this.hello = "下午好";
     } else {
       this.hello = "晚上好";
     }
 
     // console.log(time);
+  },
+  mounted() {
+    window.onscroll = function() {
+      var box = this.$refs.homePage.scrollTop;
+      let osTop = document.documentElement.scrollTop || document.body.srcollTop;
+      // if(osTop>0){
+      console.log(box);
+      console.log("osTop");
+    }; // 可以获取滚动事件
+    window.addEventListener("mousewheel", this.handleScroll, false);
   },
   methods: {
     ...mapActions(["setPrevPlaySong"]),
@@ -60,6 +79,13 @@ export default {
         name: "songDetails",
         params: { songId: "wy_" + songId }
       });
+    },
+    handleScroll() {
+      let osTop = document.documentElement.scrollTop || document.body.srcollTop;
+      // if(osTop>0){
+      console.log("osTop");
+      this.titleActive = true;
+      // }
     }
   }
 };
@@ -85,12 +111,17 @@ export default {
     .likeBox {
       padding-left: 10px;
       padding-top: 10px;
+      // display: flex;
+      // justify-content: space-around;
       .itemLike {
         float: left;
         margin: 20px;
         text-align: center;
         cursor: pointer;
         .imgLike {
+          background-color: #9530a3;
+          width: 200px;
+          height: 200px;
           img {
             width: 200px;
             height: 200px;

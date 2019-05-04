@@ -15,7 +15,19 @@ Vue.config.productionTip = false;
 import "./listen1-api.js";
 // const listen1Api = require("./listen1-api.min.js");
 
+//引入这个懒加载插件
+import VueLazyload from 'vue-lazyload'; 
 
+Vue.use(VueLazyload);
+// 或者提娜佳配置项
+// Vue.use(VueLazyload, {
+//   preLoad: 1.3,
+//   error: 'dist/error.png',
+//   loading: 'dist/loading.gif',
+//   attempt: 1，
+  // the default is ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend']
+  // listenEvents: [ 'scroll' ]
+// })
 
 
 // 导入muse-ui
@@ -66,3 +78,6 @@ new Vue({
   template: "<App/>",
   store // 挂载 store 状态管理器
 });
+
+
+console.info("本播放器由Gavin zijef根据极光音乐改编创作\n全是利用网上的开源api作为数据来源，本软件不作为破解音乐软件，也不提供下载功能，如有侵权请联系作者\n也希望你有好的建议和想法反馈\n作者QQ：913497146，微信：913497146zjf，网易云：1581414085");

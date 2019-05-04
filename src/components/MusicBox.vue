@@ -18,7 +18,7 @@
                   :key="item.playlist.id"
                   @click="goSongListDetails(item.playlist.id)"
                 >
-                  <img :src="item.playlist.coverImgUrl" alt srcset class="img">
+                  <img v-lazy="item.playlist.coverImgUrl" alt srcset class="img">
                   <div class="itemInfo">
                     <div class="itemName" :title="item.playlist.name">{{item.playlist.name}}</div>
                     <span class="itemTag">{{item.playlist.tags.join(",")}}</span>
@@ -37,7 +37,7 @@
               :key="item.id"
               @click="goSongListDetails(item.id)"
             >
-              <img :src="item.coverImgUrl" alt srcset class="img">
+              <img v-lazy="item.coverImgUrl" alt srcset class="img">
               <div class="itemInfo">
                 <div class="itemName" :title="item.name">{{item.name}}</div>
                 <span class="itemTag">{{item.tags.join("，")}}</span>
@@ -55,7 +55,7 @@
               :key="item.id"
               @click="goSongListDetails(item.id)"
             >
-              <img :src="item.coverImgUrl" alt srcset class="img">
+              <img v-lazy="item.coverImgUrl" alt srcset class="img">
               <div class="itemInfo">
                 <div class="itemName" :title="item.name">{{item.name}}</div>
                 <span class="itemTag">{{item.tags.join(",")}}</span>
@@ -71,11 +71,11 @@
           <div class="infoBox">
             <ul class="itemBox">
               <li class="item" v-for="item in this.qq_HotSongList.list" :key="item.dissid">
-                <img :src="item.imgurl" alt srcset class="img">
+                <img v-lazy="item.imgurl" alt srcset class="img">
                 <div class="itemInfo">
                   <div class="itemName">{{item.dissname}}</div>
-                  <span class="itemTag">etgegwergwergrg</span>
-                  <span class="itemDescription">wergwergwewrgwergergwergwergwerge</span>
+                  <span class="itemTag">{{item.creator.name}}</span>
+                  <span class="itemDescription">{{item.createtime}}</span>
                 </div>
               </li>
             </ul>
@@ -90,11 +90,11 @@
               :key="item.dissid"
               @click="goSongListDetails(item.dissid)"
             >
-              <img :src="item.imgurl" alt srcset class="img">
+              <img v-lazy="item.imgurl" alt srcset class="img">
               <div class="itemInfo">
                 <div class="itemName">{{item.dissname}}</div>
-                <span class="itemTag">{{4504}}</span>
-                <span class="itemDescription">{{5275275}}</span>
+                <span class="itemTag">{{item.creator.name}}</span>
+                <span class="itemDescription">{{item.createtime}}</span>
               </div>
             </li>
           </ul>
@@ -108,7 +108,7 @@
               :key="item.access_num"
               @click="goSongListDetails(item.id)"
             >
-              <img :src="item.cover_url_medium" alt srcset class="img">
+              <img v-lazy="item.cover_url_medium" alt srcset class="img">
               <div class="itemInfo">
                 <div class="itemName">{{item.title}}</div>
                 <span class="itemTag">{{item.creator_info.nick}}</span>
@@ -119,110 +119,10 @@
         </div>
       </div>
       <div class="musicContiner" v-if="active2 === 2">
-        <div class="hotSongList">
-          <h3 class="hot">kuwoyingyu</h3>
-          <div class="infoBox">
-            <ul class="itemBox">
-              <li class="item">
-                <img src alt srcset class="img">
-                <div class="itemInfo">
-                  <div class="itemName">etgegwergwergrg</div>
-                  <span class="itemTag">etgegwergwergrg</span>
-                  <span class="itemDescription">wergwergwewrgwergergwergwergwerge</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="newSongList">
-          <div class="newTitle">最新歌单</div>
-          <ul class="itemBox" v-if="wy_HotSongList">
-            <li
-              class="item"
-              v-for="item in wy_HotSongList"
-              :key="item.id"
-              @click="goSongListDetails(item.id)"
-            >
-              <img :src="item.coverImgUrl" alt srcset class="img">
-              <div class="itemInfo">
-                <div class="itemName" :title="item.name">{{item.name}}</div>
-                <span class="itemTag">{{item.tags.join("，")}}</span>
-                <span class="itemDescription">{{item.description}}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="boutiqueSongList">
-          <div class="boutiqueTitle">精品歌单</div>
-          <ul class="itemBox" v-if="wy_BoutiqueSongList">
-            <li
-              class="item"
-              v-for="item in wy_BoutiqueSongList"
-              :key="item.id"
-              @click="goSongListDetails(item.id)"
-            >
-              <img :src="item.coverImgUrl" alt srcset class="img">
-              <div class="itemInfo">
-                <div class="itemName" :title="item.name">{{item.name}}</div>
-                <span class="itemTag">{{item.tags.join(",")}}</span>
-                <span class="itemDescription">{{item.description}}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
+       <span style="font-size:20px;text-align:center;display:block;width:100%;margin-top：100px;">敬请期待</span>    
       </div>
       <div class="musicContiner" v-if="active2 === 3">
-        <div class="hotSongList">
-          <h3 class="hot">QQyingyu</h3>
-          <div class="infoBox">
-            <ul class="itemBox">
-              <li class="item">
-                <img src alt srcset class="img">
-                <div class="itemInfo">
-                  <div class="itemName">etgegwergwergrg</div>
-                  <span class="itemTag">etgegwergwergrg</span>
-                  <span class="itemDescription">wergwergwewrgwergergwergwergwerge</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="newSongList">
-          <div class="newTitle">最新歌单</div>
-          <ul class="itemBox" v-if="wy_HotSongList">
-            <li
-              class="item"
-              v-for="item in wy_HotSongList"
-              :key="item.id"
-              @click="goSongListDetails(item.id)"
-            >
-              <img :src="item.coverImgUrl" alt srcset class="img">
-              <div class="itemInfo">
-                <div class="itemName" :title="item.name">{{item.name}}</div>
-                <span class="itemTag">{{item.tags.join("，")}}</span>
-                <span class="itemDescription">{{item.description}}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="boutiqueSongList">
-          <div class="boutiqueTitle">精品歌单</div>
-          <ul class="itemBox" v-if="wy_BoutiqueSongList">
-            <li
-              class="item"
-              v-for="item in wy_BoutiqueSongList"
-              :key="item.id"
-              @click="goSongListDetails(item.id)"
-            >
-              <img :src="item.coverImgUrl" alt srcset class="img">
-              <div class="itemInfo">
-                <div class="itemName" :title="item.name">{{item.name}}</div>
-                <span class="itemTag">{{item.tags.join(",")}}</span>
-                <span class="itemDescription">{{item.description}}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
+       <span style="font-size:20px;text-align:center;display:block;width:100%;margin-top：100px;">敬请期待</span>    
       </div>
     </mu-container>
   </div>
