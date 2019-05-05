@@ -49,7 +49,7 @@ export default {
       this.hello = "早上好";
     } else if (11 <= time && time < 14) {
       this.hello = "中午好";
-    } else if (14 < time && time < 18) {
+    } else if (14 <= time && time < 18) {
       this.hello = "下午好";
     } else {
       this.hello = "晚上好";
@@ -58,14 +58,12 @@ export default {
     // console.log(time);
   },
   mounted() {
-    window.onscroll = function() {
-      var box = this.$refs.homePage.scrollTop;
-      let osTop = document.documentElement.scrollTop || document.body.srcollTop;
-      // if(osTop>0){
-      console.log(box);
-      console.log("osTop");
-    }; // 可以获取滚动事件
-    window.addEventListener("mousewheel", this.handleScroll, false);
+    this.$refs.homePage.addEventListener('scroll', this.handleScroll, false);
+    document.querySelector(".homePage-container").addEventListener("scroll", this.handleScroll, false);
+    // window.addEventListener("scroll", this.handleScroll);
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
     ...mapActions(["setPrevPlaySong"]),
@@ -81,12 +79,14 @@ export default {
       });
     },
     handleScroll() {
-      let osTop = document.documentElement.scrollTop || document.body.srcollTop;
-      // if(osTop>0){
       console.log("osTop");
-      this.titleActive = true;
-      // }
-    }
+      let top = document.querySelector("#searchBar").offsetTop;
+      let osTop = document.documentElement.scrollTop || document.body.srcollTop;
+      if (osTop > 0) {
+        console.log(osTop);
+        this.titleActive = true;
+      }
+    },
   }
 };
 </script>

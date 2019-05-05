@@ -37,7 +37,7 @@
     </div>
     <div class="main">
       <div class="heades">
-        <input type="text" class="input" placeholder="在库中搜索" v-model="seachValue">
+        <input type="text" class="input" placeholder="在库中搜索" v-model="seachValue" @keyup.enter="goSeach(seachValue)">
         <span class="blank"></span>
         <span class="iconfont icon-sousuo1" @click="goSeach(seachValue)"></span>
       </div>
@@ -303,10 +303,11 @@ export default {
       document.onkeydown = e => {
         switch (e.ctrlKey && e.keyCode) {
           // case 13: // 回车
-          // this.$refs.seachValue.focus(function(){
-          //   this.goSeach();
-          // })
-          // break;
+          //   this.$refs.input.focus(function() {
+          //     console.log("adfgdsf");
+          //     this.goSeach(this.seachValue);
+          //   });
+          //   break;
           case 32: // 播放暂停Ctrl + Space
             this.play();
             break;
@@ -344,7 +345,7 @@ export default {
     };
     // 音乐播放出错
     this.$refs.audio.onerror = () => {
-      this.$toast.error("暂时无法播放，已自动播放下一首");
+      this.prevPlayList ? this.$toast.error("暂时无法播放，已自动播放下一首") : null;
       this.next();
       // console.log('播放出错啦！')
     };
@@ -352,6 +353,7 @@ export default {
     this.$refs.audio.onplay = () => {
       this.playing = true;
     };
+    // 初始化按键事件
     this.$nextTick(() => {
       this.initKeyDown();
     });

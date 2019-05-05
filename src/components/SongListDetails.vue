@@ -2,7 +2,7 @@
   <div class="homePage-container">
     <div class="leftImgBox">
       <div class="img">
-        <img v-lazy="prevPlayList.coverImgUrl" alt srcset>
+        <img :src="prevPlayList.coverImgUrl" alt srcset>
       </div>
       <span class="detailsName">{{prevPlayList.name}}</span>
       <span class="detailsTag">{{prevPlayList.tags.join("，")}}</span>
