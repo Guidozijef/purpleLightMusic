@@ -18,7 +18,7 @@
             @click="goImportList(item.id)"
           >
             <div class="listCover">
-              <img v-lazy="item.img" alt srcset>
+              <img :src="item.img" alt srcset>
             </div>
             <div class="infoBox">
               <span class="listName">{{item.name}}</span>
@@ -42,7 +42,7 @@
             @click="goImportList(item.id)"
           >
             <div class="listCover">
-              <img v-lazy="item.coverImgUrl" alt srcset>
+              <img :src="item.coverImgUrl" alt srcset>
             </div>
             <div class="infoBox">
               <span class="listName">{{item.name}}</span>
@@ -63,7 +63,7 @@
     <div class="self-right" v-if="this.prevPlayList && this.importUserInfo">
       <div class="infoBox">
         <div class="songListCover">
-          <img v-lazy="prevPlayList.coverImgUrl" alt srcset>
+          <img :src="prevPlayList.coverImgUrl" alt srcset>
         </div>
         <div class="songListInfoBox">
           <span class="songListName">{{prevPlayList.name}}</span>
