@@ -15,7 +15,7 @@
             class="addItem"
             v-for="item in addSongList"
             :key="item.id"
-            @click="goImportList(item.id)"
+            @click="goSongList(item.name)"
           >
             <div class="listCover">
               <img :src="item.img" alt srcset>
@@ -41,7 +41,7 @@
             :key="item.id"
             @click="goImportList(item.id)"
           >
-            <div class="listCover">
+            <div class="listCover" v-if="item">
               <img :src="item.coverImgUrl" alt srcset>
             </div>
             <div class="infoBox">
@@ -60,15 +60,15 @@
         <span>导入网易歌单</span>
       </div>
     </div>
-    <div class="self-right" v-if="this.prevPlayList && this.importUserInfo">
-      <div class="infoBox">
-        <div class="songListCover">
+    <div class="self-right" v-if="this.importUserInfo.code">
+      <div :class="titleActive ? 'titleActive' : 'infoBox'">
+        <div class="songListCover" v-if="prevPlayList">
           <img :src="prevPlayList.coverImgUrl" alt srcset>
         </div>
         <div class="songListInfoBox">
           <span class="songListName">{{prevPlayList.name}}</span>
           <span class="songListDescription">{{prevPlayList.description}}</span>
-          <div class="songListSum">
+          <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
             <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
             <span calss="number" style="margin-right:5px;">共播放{{prevPlayList.playCount}}次</span>
           </div>
@@ -91,6 +91,22 @@
             <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
             <span class="songer">{{item.ar[0].name}}</span>
             <span class="songAr">{{item.al.name}}</span>
+            <div class="itemControl">
+              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
+              <mu-menu placement="top-start">
+                <span
+                  class="iconfont icon-gengduo5"
+                  style="cursor: pointer;margin-top:-5px;"
+                  ref="button"
+                  title="添加到歌单"
+                ></span>
+                <mu-list slot="content">
+                  <mu-list-item button v-for="(m, n) in addSongList" :key="n">
+                    <mu-list-item-title @click="addSongObj(item.id, m.name)">{{m.name}}</mu-list-item-title>
+                  </mu-list-item>
+                </mu-list>
+              </mu-menu>
+            </div>
           </li>
         </ul>
       </div>
@@ -102,15 +118,37 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      addSongList:[], // 创建的歌单
+      addSongList: [], // 创建的歌单
+      titleActive: false
       // importData: '',
     };
   },
   computed: {
     ...mapGetters(["importUserInfo", "prevPlayList", "historyList"])
   },
+  mounted() {
+    this.$nextTick(() => {
+      let _this = this;
+      window.addEventListener("scroll", _this.handleScroll, true);
+    });
+  },
+  created() {
+    this.addSongList = JSON.parse(localStorage.getItem("addList"));
+  },
   methods: {
-    ...mapActions(["setImportUserInfo", "setPrevPlayList","setHistory", "setPrevPlaySong"]),
+    ...mapActions([
+      "setImportUserInfo",
+      "setPrevPlayList",
+      "setHistory",
+      "setPrevPlaySong"
+    ]),
+    handleScroll() {
+      if ($(".mainContainer").scrollTop() > 0) {
+        this.titleActive = true;
+      } else {
+        this.titleActive = false;
+      }
+    },
     importList() {
       var uid = "1581414085";
       this.$prompt("请输入网易云Uid", "提示", {
@@ -158,7 +196,14 @@ export default {
         }
       });
     },
-     goSongDetails(songId) {
+    goSongList(songListName) {
+      JSON.parse(localStorage.getItem("addList")).forEach(ele => {
+        if (ele.name === songListName) {
+          this.setPrevPlayList({ obj: ele });
+        }
+      });
+    },
+    goSongDetails(songId) {
       this.prevPlayList.tracks.forEach(ele => {
         if (ele.id == songId) {
           this.setPrevPlaySong({ obj: ele });
@@ -173,17 +218,36 @@ export default {
       this.$prompt("请输入歌单名称", "提示", {
         validator(value) {
           return {
-            valid: value,
+            valid: value
             // message: "请输入正确的网易云Uid"
           };
         }
       }).then(({ result, value }) => {
         if (result) {
-          let obj = {"name":value,"img":"http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1","creator":"my","List":[],"trackCount":0,}
+          let obj = {
+            name: value,
+            img:
+              "http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1",
+            creator: "my",
+            tracks: [],
+            trackCount: 0
+          };
           this.addSongList.push(obj);
-          this.setHistory(this.addSongList);
+          // this.setHistory(this.addSongList);
+          localStorage.setItem("addList", JSON.stringify(this.addSongList));
         } else {
           // this.$toast.message("点击了取消");
+        }
+      });
+    },
+    addSongObj(songId, songListName) {
+      JSON.parse(localStorage.getItem("addList")).forEach(item => {
+        if (songListName === item.name) {
+          this.prevPlayList.tracks.forEach(itemSong => {
+            if (songId === itemSong.id) {
+              item.tracks.push(itemSong);
+            }
+          });
         }
       });
     }
@@ -200,6 +264,9 @@ export default {
     overflow-y: auto;
     overflow-x: hidden;
     .selfTitle {
+      background-color: #fff;
+      position: sticky;
+      top: 0px;
       font-size: 16px;
       font-weight: 700;
       padding-left: 20px;
@@ -275,16 +342,20 @@ export default {
   }
   .self-right {
     margin-left: 300px;
-    .infoBox {
-      // position:fixed;
-      height: 240px;
-      bottom: 1px solid #9b9b9b;
+    .titleActive {
+      position: fixed;
+      top: 52px;
+      height: 100px;
+      width: 100%;
+      background-color: #e6e6e6;
+      opacity: 0.95;
       .songListCover {
-        margin: 20px;
-        width: 200px;
-        height: 200px;
+        width: 80px;
+        height: 80px;
         float: left;
+        margin-left: 10px;
         img {
+          margin: 10px;
           width: 100%;
           height: 100%;
         }
@@ -293,6 +364,7 @@ export default {
         margin: 20px 0;
         float: left;
         .songListName {
+          margin-left: 20px;
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: wrap;
@@ -302,6 +374,39 @@ export default {
           line-height: 50px;
         }
         .songListDescription {
+          display: none;
+        }
+      }
+    }
+    .infoBox {
+      transition: all 0.5s linear;
+      height: 240px;
+      .songListCover {
+        width: 200px;
+        height: 200px;
+        float: left;
+        line-height: 100px;
+        img {
+          margin: 20px;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .songListInfoBox {
+        margin: 20px 20px;
+        float: left;
+        .songListName {
+          margin-left: 20px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: wrap;
+          display: block;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 50px;
+        }
+        .songListDescription {
+          margin-left: 20px;
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: wrap;
@@ -320,11 +425,27 @@ export default {
         li {
           height: 40px;
           width: 100%;
-          line-height: 40px;
           &:hover {
-            background-color: #e0e0e0;
+            // background-color: #e0e0e0;
+            background: -webkit-gradient(
+              linear,
+              0 0,
+              0 bottom,
+              from(#9530a330),
+              to(#dedfdf)
+            );
+            .itemControl {
+              display: inline-block;
+              span {
+                // color:#fff;
+                font-size: 20px;
+                margin-top: 5px;
+                display: inline-block;
+              }
+            }
           }
           .idx {
+            line-height: 40px;
             text-align: center;
             display: inline-block;
             width: 30px;
@@ -334,6 +455,7 @@ export default {
             font-size: 14px;
           }
           .songName {
+            line-height: 40px;
             display: inline-block;
             margin-left: 20px;
             width: 250px;
@@ -344,6 +466,7 @@ export default {
             cursor: pointer;
           }
           .songer {
+            line-height: 40px;
             margin-left: 50px;
             display: inline-block;
             width: 180px;
@@ -353,12 +476,20 @@ export default {
             font-size: 14px;
           }
           .songAr {
+            line-height: 40px;
             display: inline-block;
             overflow: hidden;
             width: 200px;
             text-overflow: ellipsis;
             white-space: nowrap;
             font-size: 14px;
+          }
+          .itemControl {
+            display: none;
+            float: right;
+            margin-right: 20px;
+            font-size: 20px;
+            width: 100px;
           }
         }
       }

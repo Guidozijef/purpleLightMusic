@@ -27,6 +27,22 @@
             <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
             <span class="songer">{{item.ar[0].name}}</span>
             <span class="songAr">{{item.al.name}}</span>
+            <div class="itemControl">
+              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;"></span>
+              <mu-menu placement="top-start">
+                <span
+                  class="iconfont icon-gengduo5"
+                  style="cursor: pointer;margin-top:-5px;"
+                  ref="button"
+                  @click="open = !open"
+                ></span>
+                <mu-list slot="content">
+                  <mu-list-item button v-for="(item, index) in addSongList" :key="index">
+                    <mu-list-item-title>{{item.name}}</mu-list-item-title>
+                  </mu-list-item>
+                </mu-list>
+              </mu-menu>
+            </div>
           </li>
         </ul>
       </div>
@@ -40,7 +56,9 @@ export default {
   data() {
     return {
       bgEven: false,
-      dataList: {}
+      dataList: {},
+      addSongList: [],
+      open: false
     };
   },
   computed: {
@@ -63,10 +81,11 @@ export default {
         });
       }
     });
+    this.addSongList = JSON.parse(localStorage.getItem("addList"));
   },
 
   methods: {
-    ...mapActions(["setPrevPlayList","setPrevPlaySong"]),
+    ...mapActions(["setPrevPlayList", "setPrevPlaySong"]),
     goSongDetails(songId) {
       this.prevPlayList.tracks.forEach(ele => {
         if (ele.id == songId) {
@@ -151,6 +170,14 @@ export default {
               from(#9530a330),
               to(#dedfdf)
             );
+            .itemControl {
+              display: inline-block;
+              span {
+                // color:#fff;
+                font-size: 20px;
+                display: inline-block;
+              }
+            }
           }
           .idx {
             text-align: center;
@@ -187,6 +214,13 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             font-size: 14px;
+          }
+          .itemControl {
+            display: none;
+            float: right;
+            margin-right: 20px;
+            font-size: 20px;
+            width: 50px;
           }
         }
       }

@@ -10,23 +10,28 @@
       <div class="musicContiner" v-if="active2 === 0">
         <div class="hotSongList" v-if="this.wy_HottestSongList">
           <h3 class="hot">最热门</h3>
-            <div class="infoBox">
-              <ul class="itemBox">
-                <li
-                  class="item"
-                  v-for="item in this.wy_HottestSongList"
-                  :key="item.playlist.id"
-                  @click="goSongListDetails(item.playlist.id)"
+          <div class="infoBox">
+            <ul class="itemBox">
+              <li class="item" v-for="item in this.wy_HottestSongList" :key="item.playlist.id">
+                <img
+                  v-lazy="item.playlist.coverImgUrl"
+                  alt
+                  srcset
+                  class="img"
+                  ondragstart="return false;"
                 >
-                  <img v-lazy="item.playlist.coverImgUrl" alt srcset class="img">
-                  <div class="itemInfo">
-                    <div class="itemName" :title="item.playlist.name">{{item.playlist.name}}</div>
-                    <span class="itemTag">{{item.playlist.tags.join(",")}}</span>
-                    <span class="itemDescription">{{item.playlist.description}}</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
+                <div class="itemInfo">
+                  <div
+                    class="itemName"
+                    :title="item.playlist.name"
+                    @click="goSongListDetails(item.playlist.id)"
+                  >{{item.playlist.name}}</div>
+                  <span class="itemTag">{{item.playlist.tags.join(",")}}</span>
+                  <span class="itemDescription">{{item.playlist.description}}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
         <div class="newSongList">
           <div class="newTitle">最新歌单</div>
@@ -119,10 +124,14 @@
         </div>
       </div>
       <div class="musicContiner" v-if="active2 === 2">
-       <span style="font-size:20px;text-align:center;display:block;width:100%;margin-top：100px;">敬请期待</span>    
+        <span
+          style="font-size:20px;text-align:center;display:block;width:100%;margin-top：100px;"
+        >敬请期待</span>
       </div>
       <div class="musicContiner" v-if="active2 === 3">
-       <span style="font-size:20px;text-align:center;display:block;width:100%;margin-top：100px;">敬请期待</span>    
+        <span
+          style="font-size:20px;text-align:center;display:block;width:100%;margin-top：100px;"
+        >敬请期待</span>
       </div>
     </mu-container>
   </div>
@@ -133,11 +142,6 @@
 import $ from "jquery";
 import { mapActions, mapGetters } from "vuex";
 
-// import "../listen1-api.min.js";
-// // const listen1Api = require('../listen1-api.min.js');
-// const platform = 'netease';
-// // 获取网易平台的热门歌单列表
-// const url = '/show_playlist?source='+platform;
 import musicApi from "@suen/music-api";
 export default {
   data() {
@@ -211,6 +215,35 @@ export default {
       }
     });
   },
+  mounted() {
+    var moveElem = $(".itemBox")[0]; //待拖拽元素
+    var tLeft, tTop, moveX; //鼠标按下时相对于选中元素的位移
+
+    //监听鼠标按下事件
+    document.addEventListener("mousedown", function(e) {
+      if (e.target == moveElem) {
+        var moveElemRect = moveElem.getBoundingClientRect();
+        tLeft = e.clientX; //鼠标按下时的x坐标
+      }
+    });
+
+    //监听鼠标放开事件
+    document.addEventListener("mouseup", function(e) {
+      moveX = e.clientX - tLeft;
+      // console.log(moveX);
+      var boxInfo = moveElem.getBoundingClientRect();
+      if (moveX + boxInfo.left > 0) {
+        moveElem.style.left = "0px";
+      } else if (
+        moveX + boxInfo.left <
+        -3264 + $(".mainContainer")[0].offsetWidth
+      ) {
+        moveElem.style.left = -3264 + $(".mainContainer")[0].offsetWidth + "px";
+      } else {
+        moveElem.style.left = moveX * 1.1 + boxInfo.left + "px";
+      }
+    });
+  },
   methods: {
     ...mapActions([
       "set_WY_HottestSongList",
@@ -247,7 +280,7 @@ export default {
           // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
           this.$nextTick(() => {
             this.set_QQ_BoutiqueSongList({ data: jsData.playlist.data });
-            console.log(jsData);
+            // console.log(jsData);
           });
         }
       });
@@ -272,22 +305,38 @@ export default {
       }
       .infoBox {
         height: 120px;
-        overflow-y: hidden;
-        overflow-x: auto;
-        width:100%;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        background-color: #e9e9e9;
         .itemBox {
-          width: 250%;
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
+          z-index: 1000;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          transition: all 0.5s ease;
+          -webkit-transform: all 0.5s ease;
+          position: relative;
+          top: 0px;
+          left: 0px;
+          height: 100%;
+          width: 3264px;
+          // width: 250%;
+          // display: flex;
+          // justify-content: space-between;
+          // flex-wrap: wrap;
+          cursor: pointer;
           .item {
             float: left;
             width: 358px;
             height: 120px;
+            margin-right: 50px;
             transition: all 0.5s ease;
-            &:hover {
-              background-color: #e9e9e9;
-            }
+            // &:hover {
+            //   background-color: #e9e9e9;
+            // }
             .img {
               margin-top: 8px;
               margin-left: 20px;
@@ -332,6 +381,9 @@ export default {
         border-bottom: 1px solid #ccc;
         font-size: 20px;
         font-weight: 700;
+        position: sticky;
+        top: 0px;
+        background-color: #fff;
       }
       .itemBox {
         // float: left;
@@ -343,6 +395,7 @@ export default {
           width: 358px;
           height: 120px;
           transition: all 0.5s ease;
+          cursor: pointer;
           &:hover {
             background-color: #e9e9e9;
             // border:1px solid #9530A3;
@@ -390,6 +443,9 @@ export default {
         border-bottom: 1px solid #ccc;
         font-size: 20px;
         font-weight: 700;
+        position: sticky;
+        top: 0px;
+        background-color: #fff;
       }
       .itemBox {
         // float: left;

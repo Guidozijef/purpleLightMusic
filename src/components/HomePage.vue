@@ -1,7 +1,7 @@
 <template>
-  <div class="homePage-container" ref="homePage">
+  <div class="homePage-container" ref="homePage" @scroll.native="handleScroll">
     <div class="like-container">
-      <span class="title">{{hello}}</span>
+      <span :class="titleActive ? 'titleActive' : 'title'">{{hello}}</span>
       <div class="history">上次播放</div>
       <ul class="likeBox" v-if="historyData">
         <li
@@ -11,7 +11,7 @@
           @click="goSongDetails(item.id)"
         >
           <div class="imgLike" v-if="item.al">
-            <img v-lazy="item.al.picUrl" alt>
+            <img :src="item.al.picUrl" alt>
           </div>
           <span class="imgTitle" v-if="item.name" :title="item.name">{{item.name}}</span>
         </li>
@@ -27,11 +27,12 @@ export default {
   data() {
     return {
       hello: "",
-      historyData: []
+      historyData: [],
+      titleActive: false,
     };
   },
   computed: {
-    ...mapGetters(["likeSowList", "historyList"])
+    ...mapGetters(["historyList"])
   },
   created() {
     // 清除历史记录中的空对象
@@ -58,12 +59,10 @@ export default {
     // console.log(time);
   },
   mounted() {
-    this.$refs.homePage.addEventListener('scroll', this.handleScroll, false);
-    document.querySelector(".homePage-container").addEventListener("scroll", this.handleScroll, false);
-    // window.addEventListener("scroll", this.handleScroll);
-  },
-  destroyed() {
-    window.removeEventListener("scroll", this.handleScroll);
+    this.$nextTick(() => {
+      let _this = this;
+      window.addEventListener("scroll", _this.handleScroll, true);
+    });
   },
   methods: {
     ...mapActions(["setPrevPlaySong"]),
@@ -79,24 +78,38 @@ export default {
       });
     },
     handleScroll() {
-      console.log("osTop");
-      let top = document.querySelector("#searchBar").offsetTop;
-      let osTop = document.documentElement.scrollTop || document.body.srcollTop;
-      if (osTop > 0) {
-        console.log(osTop);
+      if ($(".mainContainer").scrollTop() > 50) {
         this.titleActive = true;
+      }else{
+        this.titleActive = false;
       }
-    },
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
 .homePage-container {
+  position: relative;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  margin-left: 20px;
+  margin: 20px;
   .like-container {
+    .titleActive{
+      padding-left:20px;
+      position: fixed;
+      display: block;
+      left:70px;
+      top:52px;
+      line-height:100px;
+      font-size: 30px;
+      font-weight: 700;
+      width:100%;
+      background-color: #F8F8F8;
+      opacity: 0.95;
+    }
     .title {
+      transition: all 1s ease;
       margin-top: 150px;
       display: block;
       font-size: 50px;

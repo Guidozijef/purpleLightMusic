@@ -96,16 +96,7 @@
         </div>
       </div>
     </div>
-    <!-- <mu-alert
-      color="#9530a330"
-      @delete="alert1 = false"
-      delete
-      v-if="alert1"
-      transition="mu-scale-transition"
-    >
-      <mu-icon left value="#9530a330"></mu-icon>当前音乐暂时无法播放，已自动播放下一首
-    </mu-alert>-->
-    <div class="mainContainer" :style="{'width':containerWidth}">
+    <div class="mainContainer" :style="{'width':containerWidth,'height':containerHeight}" ref="main">
       <!-- <keep-alive> -->
       <router-view></router-view>
       <!-- </keep-alive> -->
@@ -132,7 +123,8 @@ export default {
       lyric: [],
       value: 0,
       playing: null,
-      containerWidth: document.body.clientWidth - 70 + "px"
+      containerWidth: document.body.clientWidth - 70 + "px",
+      containerHeight: window.innerHeight - 122 + "px",
     };
   },
   computed: {
