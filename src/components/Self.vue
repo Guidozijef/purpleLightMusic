@@ -120,7 +120,6 @@ export default {
     return {
       addSongList: [], // 创建的歌单
       titleActive: false
-      // importData: '',
     };
   },
   computed: {
