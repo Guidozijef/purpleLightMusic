@@ -101,8 +101,8 @@
                   title="添加到歌单"
                 ></span>
                 <mu-list slot="content">
-                  <mu-list-item button v-for="(m, n) in addSongList" :key="n">
-                    <mu-list-item-title @click="addSongObj(item.id, m.name)">{{m.name}}</mu-list-item-title>
+                  <mu-list-item button v-for="(m, n) in addSongList" :key="n" @click="addSongObj(item.id, m.name)">
+                    <mu-list-item-title>{{m.name}}</mu-list-item-title>
                   </mu-list-item>
                 </mu-list>
               </mu-menu>
