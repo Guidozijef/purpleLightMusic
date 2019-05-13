@@ -240,7 +240,7 @@ export default {
       });
     },
     addSongObj(songId, songListName) {
-      JSON.parse(localStorage.getItem("addList")).forEach(item => {
+      this.addSongList.forEach((item)=> {
         if (songListName === item.name) {
           this.prevPlayList.tracks.forEach(itemSong => {
             if (songId === itemSong.id) {
@@ -249,6 +249,7 @@ export default {
           });
         }
       });
+      localStorage.setItem("addList", JSON.stringify(this.addSongList));
     }
   }
 };
