@@ -132,7 +132,7 @@ export default {
     });
   },
   created() {
-    this.addSongList = JSON.parse(localStorage.getItem("addList"));
+    this.addSongList = JSON.parse(localStorage.getItem("addList")) || [];
   },
   methods: {
     ...mapActions([
