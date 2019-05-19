@@ -5,7 +5,7 @@
       v-if="this.prevPlaySong"
       :style="{backgroundImage: 'url(' + this.prevPlaySong.al.picUrl + ')'}"
     ></div>
-    <div class="mark"></div>
+    <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
       <div class="songImg" v-if="this.prevPlaySong">
         <img :src="this.prevPlaySong.al.picUrl" alt srcset>
@@ -34,26 +34,6 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-// function parseLyric(lrc) {
-//   if (lrc === "") return "";
-//   var lyrics = lrc.split("\n");
-//   var lrcList = [];
-//   for (var i = 0; i < lyrics.length; i++) {
-//     var lyric = decodeURIComponent(lyrics[i]);
-//     var timeReg = /\[\d*:\d*((\.|\:)\d*)*\]/g;
-//     var timeRegExpArr = lyric.match(timeReg);
-//     if (!timeRegExpArr) continue;
-//     var clause = lyric.replace(timeReg, "");
-//     for (var k = 0, h = timeRegExpArr.length; k < h; k++) {
-//       var t = timeRegExpArr[k];
-//       var min = Number(String(t.match(/\[\d*/i)).slice(1));
-//       var sec = Number(String(t.match(/\:\d*/i)).slice(1));
-//       var times = min * 60 + sec;
-//       lrcList.push({ times: times, clause: clause });
-//     }
-//   }
-//   return lrcList;
-// }
 
 export default {
   data() {
@@ -63,7 +43,9 @@ export default {
       value: 0, // 前面五条歌词先不滚动
       lyricIndex: 0, // 当前歌词的索引
       noLyric: false,
-      top: 0 // 歌词居中
+      top: 0, // 歌词居中
+      containerWidth: document.body.clientWidth - 70 + "px",
+      containerHeight: window.innerHeight - 122 + "px",
     };
   },
   computed: {
@@ -228,8 +210,6 @@ export default {
     position: fixed;
   }
   .mark {
-    width: 100%;
-    height: 510px;
     background-color: #000;
     opacity: 0.5;
     position: fixed;

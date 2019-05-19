@@ -5,6 +5,7 @@ import SongListDetails from "../components/SongListDetails.vue";
 import SongDetails from "../components/SongDetails.vue";
 import Self from "../components/Self.vue";
 import MusicBox from "../components/MusicBox.vue";
+import QieFM from "../components/QieFM.vue";
 import Seach from "../components/Seach.vue";
 
 Vue.use(Router);
@@ -56,6 +57,14 @@ export default new Router({
       path: "/musicBox",
       name: "musicBox",
       component: MusicBox,
+      meta: {
+        keepAlive: false // true 表示需要使用缓存 false表示不需要被缓存
+      }
+    },
+    {
+      path: "/qieFM",
+      name: "qieFM",
+      component: QieFM,
       meta: {
         keepAlive: false // true 表示需要使用缓存 false表示不需要被缓存
       }

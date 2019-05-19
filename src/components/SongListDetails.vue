@@ -76,7 +76,7 @@ export default {
       success: jsData => {
         // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
         this.$nextTick(() => {
-          this.setPrevPlayList({ obj: jsData.playlist }); // 改变歌曲链接
+          this.setPrevPlayList({ obj: jsData.playlist }); 
           // console.log(jsData.playlist);
         });
       }

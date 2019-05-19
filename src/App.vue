@@ -26,7 +26,7 @@
           <a herf>音乐盒</a>
         </li>
         <li class="iconFontItem">
-          <span class="iconfont icon-FMxia-copy" style="font-size:25px;"></span>
+          <span class="iconfont icon-FMxia-copy" style="font-size:25px;" @click="goQieFM()"></span>
           <a herf>企鹅FM</a>
         </li>
         <li class="iconFontItem">
@@ -37,7 +37,13 @@
     </div>
     <div class="main">
       <div class="heades">
-        <input type="text" class="input" placeholder="在库中搜索" v-model="seachValue" @keyup.enter="goSeach(seachValue)">
+        <input
+          type="text"
+          class="input"
+          placeholder="在库中搜索"
+          v-model="seachValue"
+          @keyup.enter="goSeach(seachValue)"
+        >
         <span class="blank"></span>
         <span class="iconfont icon-sousuo1" @click="goSeach(seachValue)"></span>
       </div>
@@ -96,7 +102,11 @@
         </div>
       </div>
     </div>
-    <div class="mainContainer" :style="{'width':containerWidth,'height':containerHeight}" ref="main">
+    <div
+      class="mainContainer"
+      :style="{'width':containerWidth,'height':containerHeight}"
+      ref="main"
+    >
       <!-- <keep-alive> -->
       <router-view></router-view>
       <!-- </keep-alive> -->
@@ -124,7 +134,7 @@ export default {
       value: 0,
       playing: null,
       containerWidth: document.body.clientWidth - 70 + "px",
-      containerHeight: window.innerHeight - 122 + "px",
+      containerHeight: window.innerHeight - 122 + "px"
     };
   },
   computed: {
@@ -174,6 +184,10 @@ export default {
     goMusicBox() {
       this.$router.push({ name: "musicBox" });
     },
+    // 去企鹅FM
+    goQieFM() {
+      this.$router.push({ name: "qieFM" });
+    },
     // 获取当前播放的时间
     updateTime(e) {
       this.setCurrentTime({ data: e.target.currentTime }); //获取audio当前播放时间
@@ -201,94 +215,138 @@ export default {
     },
     // 上一首
     prev() {
-      var prevPlayId = this.prevPlaySong.id;
-      this.prevPlayList.tracks.forEach((item, index) => {
-        if (prevPlayId == item.id) {
-          var ele = index <= 0 ? item : this.prevPlayList.tracks[index - 1];
-          this.setPrevPlaySong({ obj: ele });
-          $.ajax({
-            type: "get",
-            url: "https://api.imjad.cn/cloudmusic/?type=song&id=" + ele.id,
-            ContentType: "application/x-www-form-urlencoded",
-            dataType: "json",
-            success: jsData => {
-              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-              this.$nextTick(() => {
-                this.setSongPlayUrl({ url: jsData.data[0].url });
-              });
-            }
-          });
-          $.ajax({
-            type: "get",
-            url: "http://www.gequdaquan.net/gqss/api.php",
-            data: {
-              types: "lyric",
-              id: ele.id,
-              source: "netease"
-            },
-            dataType: "jsonp",
-            success: dataRic => {
-              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
-              this.$nextTick(() => {
-                this.setSongPlayLrc({ lrc: dataRic.lyric });
-                // console.log(parseLyric(dataRic.lyric))
-              });
-            }
-            // error: error => {
-            //   this.$nextTick(() => {
-            //     this.noLyric = true;
-            //   });
-            // }
-          });
+      if (this.songPlayUrl.indexOf("ws.stream.fm.qq.com") == -1) {
+        var prevPlayId = this.prevPlaySong.id;
+        this.prevPlayList.tracks.forEach((item, index) => {
+          if (prevPlayId == item.id) {
+            var ele = index <= 0 ? item : this.prevPlayList.tracks[index - 1];
+            this.setPrevPlaySong({ obj: ele });
+            $.ajax({
+              type: "get",
+              url: "https://api.imjad.cn/cloudmusic/?type=song&id=" + ele.id,
+              ContentType: "application/x-www-form-urlencoded",
+              dataType: "json",
+              success: jsData => {
+                // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
+                this.$nextTick(() => {
+                  this.setSongPlayUrl({ url: jsData.data[0].url });
+                });
+              }
+            });
+            $.ajax({
+              type: "get",
+              url: "http://www.gequdaquan.net/gqss/api.php",
+              data: {
+                types: "lyric",
+                id: ele.id,
+                source: "netease"
+              },
+              dataType: "jsonp",
+              success: dataRic => {
+                // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
+                this.$nextTick(() => {
+                  this.setSongPlayLrc({ lrc: dataRic.lyric });
+                  // console.log(parseLyric(dataRic.lyric))
+                });
+              }
+              // error: error => {
+              //   this.$nextTick(() => {
+              //     this.noLyric = true;
+              //   });
+              // }
+            });
+          }
+        });
+      } else {
+        // 正则匹配出企鹅FM的播放链接id
+        var reg = new RegExp(/R196(\w+).m4a/g);
+        var Mid = reg.exec(this.songPlayUrl);
+        // console.log(Mid)
+        var prevPlayList = [];
+        for (let item in this.prevPlayList.showList) {
+          prevPlayList.push(this.prevPlayList.showList[item])
         }
-      });
+        prevPlayList.forEach((ele, nI) => {
+          if (ele.show.strMid == Mid[1]) {
+            var nextUrlMid =
+              nI != 0
+                ?prevPlayList[nI - 1].show.strMid
+                :prevPlayList[nI].show.strMid;
+            this.setSongPlayUrl({
+              url: `http://ws.stream.fm.qq.com/vfm.tc.qq.com/R196${nextUrlMid}.m4a?fromtag=36&vkey=98837D0874E15B38FB695D0A78FF157379BCD2F8515C42A2E57B9E9B58C78C58C8093F96E2A9A6AA66D273AB647D42FBAF2BF882425C245B&guid=10000`
+            });
+          }
+        })
+      }
     },
     // 下一首
     next() {
-      var prevPlayId = this.prevPlaySong.id;
-      this.prevPlayList.tracks.forEach((item, index) => {
-        if (prevPlayId == item.id) {
-          var ele =
-            index >= this.prevPlayList.tracks.length - 1
-              ? item
-              : this.prevPlayList.tracks[index + 1];
-          this.setPrevPlaySong({ obj: ele }); // 改变当前播放的歌曲信息
-          // console.log(this.prevPlayList.tracks[index + 1]);
-          $.ajax({
-            type: "get",
-            url: "https://api.imjad.cn/cloudmusic/?type=song&id=" + ele.id,
-            ContentType: "application/x-www-form-urlencoded",
-            dataType: "json",
-            success: jsData => {
-              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-              this.$nextTick(() => {
-                this.setSongPlayUrl({ url: jsData.data[0].url });
-              });
-            }
-          });
-          $.ajax({
-            type: "get",
-            url: "http://www.gequdaquan.net/gqss/api.php",
-            data: {
-              types: "lyric",
-              id: ele.id,
-              source: "netease"
-            },
-            dataType: "jsonp",
-            success: dataRic => {
-              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
-              this.$nextTick(() => {
-                this.setSongPlayLrc({ lrc: dataRic.lyric });
-              });
-            }
-            // error: error => {
-            //   this.$nextTick(() => {
-            //     this.noLyric = true;
-            //   });
-            // }
-          });
+      if (this.songPlayUrl.indexOf("ws.stream.fm.qq.com") == -1) {
+        var prevPlayId = this.prevPlaySong.id;
+        this.prevPlayList.tracks.forEach((item, index) => {
+          if (prevPlayId == item.id) {
+            var ele =
+              index >= this.prevPlayList.tracks.length - 1
+                ? item
+                : this.prevPlayList.tracks[index + 1];
+            this.setPrevPlaySong({ obj: ele }); // 改变当前播放的歌曲信息
+            // console.log(this.prevPlayList.tracks[index + 1]);
+            $.ajax({
+              type: "get",
+              url: "https://api.imjad.cn/cloudmusic/?type=song&id=" + ele.id,
+              ContentType: "application/x-www-form-urlencoded",
+              dataType: "json",
+              success: jsData => {
+                // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
+                this.$nextTick(() => {
+                  this.setSongPlayUrl({ url: jsData.data[0].url });
+                });
+              }
+            });
+            $.ajax({
+              type: "get",
+              url: "http://www.gequdaquan.net/gqss/api.php",
+              data: {
+                types: "lyric",
+                id: ele.id,
+                source: "netease"
+              },
+              dataType: "jsonp",
+              success: dataRic => {
+                // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
+                this.$nextTick(() => {
+                  this.setSongPlayLrc({ lrc: dataRic.lyric });
+                });
+              }
+              // error: error => {
+              //   this.$nextTick(() => {
+              //     this.noLyric = true;
+              //   });
+              // }
+            });
+          }
+        });
+      } else {
+        // 正则匹配出企鹅FM的播放链接id
+        var reg = new RegExp(/R196(\w+).m4a/g);
+        var Mid = reg.exec(this.songPlayUrl);
+        // console.log(Mid)
+        var prevPlayList = [];
+        for (let item in this.prevPlayList.showList) {
+          prevPlayList.push(this.prevPlayList.showList[item])
         }
-      });
+        prevPlayList.forEach((ele, nI) => {
+          if (ele.show.strMid == Mid[1]) {
+            var nextUrlMid =
+              nI != prevPlayList.length
+                ?prevPlayList[nI + 1].show.strMid
+                :prevPlayList[nI].show.strMid;
+            this.setSongPlayUrl({
+              url: `http://ws.stream.fm.qq.com/vfm.tc.qq.com/R196${nextUrlMid}.m4a?fromtag=36&vkey=98837D0874E15B38FB695D0A78FF157379BCD2F8515C42A2E57B9E9B58C78C58C8093F96E2A9A6AA66D273AB647D42FBAF2BF882425C245B&guid=10000`
+            });
+          }
+        })
+      }
     },
     // 按键事件
     initKeyDown() {
@@ -337,7 +395,9 @@ export default {
     };
     // 音乐播放出错
     this.$refs.audio.onerror = () => {
-      this.prevPlayList ? this.$toast.error("暂时无法播放，已自动播放下一首") : null;
+      this.prevPlayList
+        ? this.$toast.error("暂时无法播放，已自动播放下一首")
+        : null;
       this.next();
       // console.log('播放出错啦！')
     };
