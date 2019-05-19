@@ -75,13 +75,6 @@ export default {
       this.$route.params.songId = this.$route.params.songId.split("_")[1];
       switch (type) {
         case "wy":
-          // if (this.prevPlayList) {
-          //   this.prevPlayList.tracks.forEach(ele => {
-          //     if (ele.id == this.$route.params.songId) {
-          //       this.setPrevPlaySong({ obj: ele });
-          //     }
-          //   });
-          // }
           $.ajax({
             type: "get",
             url:
