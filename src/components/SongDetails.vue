@@ -45,7 +45,7 @@ export default {
       noLyric: false,
       top: 0, // 歌词居中
       containerWidth: document.body.clientWidth - 70 + "px",
-      containerHeight: window.innerHeight - 122 + "px",
+      containerHeight: window.innerHeight - 122 + "px"
     };
   },
   computed: {
@@ -115,8 +115,8 @@ export default {
           break;
         case "qq":
           this.$nextTick(() => {
-            this.setSongPlayUrl({ url: this.prevPlaySong.url });
-            this.setSongPlayLrc({ lrc: this.prevPlaySong.lrc });
+            this.setSongPlayUrl({ url: `https://v1.itooi.cn/tencent/url?id=${this.$route.params.songId}&quality=128` });
+            this.setSongPlayLrc({ lrc: `https://v1.itooi.cn/tencent/lrc?id=${this.$route.params.songId}`});
           });
           break;
 
@@ -175,12 +175,17 @@ export default {
   },
   watch: {
     currentTime(val, oldval) {
-      for (let index = 0; index < this.songPlayLrc.length; index++) {
-        const element = this.songPlayLrc[index];
-        // var css = element.times < parseInt(val) < this.songPlayLrc[index+1].times ? true : false;
-        if (element.times <= parseInt(val) && parseInt(val) <= this.songPlayLrc[index+1].times) {
-          this.value = index >= 4 ? index : 0;
-          this.lyricIndex = index;
+      if (this.songPlayLrc.length) {
+        for (let index = 0; index < this.songPlayLrc.length; index++) {
+          const element = this.songPlayLrc[index];
+          // var css = element.times < parseInt(val) < this.songPlayLrc[index+1].times ? true : false;
+          if (
+            element.times <= parseInt(val) &&
+            parseInt(val) <= this.songPlayLrc[index + 1].times
+          ) {
+            this.value = index >= 4 ? index : 0;
+            this.lyricIndex = index;
+          }
         }
       }
     }

@@ -280,7 +280,7 @@ export default {
           // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
           this.$nextTick(() => {
             this.set_QQ_BoutiqueSongList({ data: jsData.playlist.data });
-            console.log(jsData);
+            // console.log(jsData);
           });
         }
       });

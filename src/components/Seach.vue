@@ -80,17 +80,34 @@ export default {
     };
   },
   created() {
+    // $.ajax({
+    //   type: "get",
+    //   url: "https://api.imjad.cn/cloudmusic/",
+    //   data: {
+    //     type: "search",
+    //     s: this.$route.params.seachValue
+    //   },
+    //   dataType: "json",
+    //   success: data => {
+    //     this.$nextTick(() => {
+    //       this.seachData = data.result.songs;
+    //       // console.log(data);
+    //     });
+    //   }
+    // });
     $.ajax({
       type: "get",
-      url: "https://api.imjad.cn/cloudmusic/",
-      data: {
-        type: "search",
-        s: this.$route.params.seachValue
-      },
+      url: `https://v1.itooi.cn/netease/search?keyword=${
+        this.$route.params.seachValue
+      }&type=song&pageSize=20&page=0`,
+      // data: {
+      //   type: "search",
+      //   s: this.$route.params.seachValue
+      // },
       dataType: "json",
-      success: data => {
+      success: resultData => {
         this.$nextTick(() => {
-          this.seachData = data.result.songs;
+          this.seachData = resultData.data.songs;
           // console.log(data);
         });
       }
@@ -115,15 +132,13 @@ export default {
       if (val == "wy") {
         $.ajax({
           type: "get",
-          url: "https://api.imjad.cn/cloudmusic/",
-          data: {
-            type: "search",
-            s: this.$route.params.seachValue
-          },
+          url: `https://v1.itooi.cn/netease/search?keyword=${
+            this.$route.params.seachValue
+          }&type=song&pageSize=20&page=0`,
           dataType: "json",
-          success: data => {
+          success: resultData => {
             this.$nextTick(() => {
-              this.seachData = data.result.songs;
+              this.seachData = resultData.data.songs;
               // console.log(data);
             });
           }
@@ -131,23 +146,20 @@ export default {
       } else if (val == "qq") {
         $.ajax({
           type: "get",
-          url:
-            "https://api.bzqll.com/music/tencent/search?key=579621905&limit=100&offset=0",
-          data: {
-            type: "song",
-            s: this.$route.params.seachValue
-          },
+          url: `https://v1.itooi.cn/tencent/search?keyword=${this.$route.params.seachValue}&type=song&pageSize=30&page=0`,
           dataType: "json",
-          success: data => {
+          success: resultData => {
             this.$nextTick(() => {
               // console.log(data);
               // 将QQ音乐的数据转化为网易云一样的结构，方便后面的解析
               let praseData = [];
-              data.data.forEach((item, index) => {
+              resultData.data.list.forEach((item, index) => {
                 let obj = {};
                 obj = item;
-                obj.ar = [{"name":item.singer}];
-                obj.al = {"name":item.name,"picUrl":item.pic}
+                obj.name = item.songname;
+                obj.id = item.songmid;
+                obj.ar = item.singer;
+                obj.al = { name: item.albumname, picUrl: `https://v1.itooi.cn/tencent/pic?id=${item.songmid}` };
                 // obj.ar[0].name = item.singer;
                 // obj.al.name = item.name;
                 // obj.al.picUrl = item.pic;

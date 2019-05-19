@@ -24,7 +24,7 @@
     <div class="FM-right" v-if="this.prevPlayList != {}">
       <div :class="titleActive ? 'titleActive' : 'infoBox'">
         <div class="songListCover" v-if="this.prevPlayList">
-          <img :src="this.prevPlayList.img" alt srcset>
+          <img v-lazy="this.prevPlayList.img" alt srcset>
         </div>
         <div class="songListInfoBox">
           <span class="songListName">{{this.prevPlayList.name}}</span>
@@ -217,6 +217,7 @@ export default {
           width: 80px;
           height: 80px;
           border-radius: 50%;
+          background-color:#6b3c71;
           overflow: hidden;
           img {
             width: 100%;
