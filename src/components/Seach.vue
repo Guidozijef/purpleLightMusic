@@ -64,6 +64,7 @@
             <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
             <span class="songer">{{item.ar[0].name}}</span>
             <span class="songAr">{{item.al.name}}</span>
+            
           </li>
         </ul>
       </div>
