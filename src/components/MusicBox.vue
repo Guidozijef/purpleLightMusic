@@ -10,32 +10,43 @@
       <div class="musicContiner" v-if="active2 === 0">
         <div class="hotSongList" v-if="this.wy_HottestSongList">
           <h3 class="hot">最热门</h3>
-          <div class="infoBox">
-            <ul class="itemBox">
-              <li class="item" v-for="item in this.wy_HottestSongList" :key="item.playlist.id">
-                <img
-                  v-lazy="item.playlist.coverImgUrl"
-                  alt
-                  srcset
-                  class="img"
-                  ondragstart="return false;"
-                >
-                <div class="itemInfo">
-                  <div
-                    class="itemName"
-                    :title="item.playlist.name"
-                    @click="goSongListDetails(item.playlist.id)"
-                  >{{item.playlist.name}}</div>
-                  <span class="itemTag">{{item.playlist.tags.join(",")}}</span>
-                  <span class="itemDescription">{{item.playlist.description}}</span>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <el-carousel :interval="4000" trigger="click" type="card" height="300px" class="hotInfo">
+            <el-carousel-item
+              class="item"
+              v-for="item in this.wy_HottestSongList"
+              :key="item.playlist.id"
+              :style="{backgroundImage: 'url(' + item.playlist.coverImgUrl + ')'}"
+            >
+              <img
+                :src="item.playlist.coverImgUrl"
+                alt
+                srcset
+                class="img"
+                ondragstart="return false;"
+              >
+              <div class="itemInfo">
+                <div
+                  class="itemName"
+                  :title="item.playlist.name"
+                  @click="goSongListDetails(item.playlist.id)"
+                >{{item.playlist.name}}</div>
+                <span
+                  class="itemTag"
+                >{{item.playlist.tags.length ? item.playlist.tags.join(",") : item.playlist.tags[0]}}</span>
+                <span class="itemDescription">{{item.playlist.description}}</span>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
         </div>
         <div class="newSongList">
           <div class="newTitle">最新歌单</div>
-          <ul class="itemBox" v-if="wy_HotSongList">
+          <ul
+            class="itemBox"
+            v-if="wy_HotSongList"
+            v-infinite-scroll="loadMore1"
+            infinite-scroll-disabled="disabled1"
+            infinite-scroll-distance="10"
+          >
             <li
               class="item"
               v-for="item in wy_HotSongList"
@@ -50,10 +61,20 @@
               </div>
             </li>
           </ul>
+          <p v-if="loading1" style="text-align:center;">
+            <img src="../assets/images/loading.gif" alt="" srcset="" style="width:30px;">
+          </p>
+          <p v-if="noMore1" style="text-align:center;">没有更多了</p>
         </div>
         <div class="boutiqueSongList">
           <div class="boutiqueTitle">精品歌单</div>
-          <ul class="itemBox" v-if="wy_BoutiqueSongList">
+          <ul
+            class="itemBox"
+            v-if="wy_BoutiqueSongList"
+            v-infinite-scroll="loadMore2"
+            infinite-scroll-disabled="disabled2"
+            infinite-scroll-distance="20"
+          >
             <li
               class="item"
               v-for="item in wy_BoutiqueSongList"
@@ -68,23 +89,30 @@
               </div>
             </li>
           </ul>
+          <p v-if="loading2" style="text-align:center;">
+            <img src="../assets/images/loading.gif" alt="" srcset="" style="width:30px;">
+          </p>
+          <p v-if="noMore2" style="text-align:center;">没有更多了</p>
         </div>
       </div>
       <div class="musicContiner" v-if="active2 === 1">
         <div class="hotSongList">
           <h3 class="hot">最热门</h3>
-          <div class="infoBox">
-            <ul class="itemBox">
-              <li class="item" v-for="item in this.qq_HotSongList.list" :key="item.dissid">
-                <img v-lazy="item.imgurl" alt srcset class="img">
-                <div class="itemInfo">
-                  <div class="itemName">{{item.dissname}}</div>
-                  <span class="itemTag">{{item.creator.name}}</span>
-                  <span class="itemDescription">{{item.createtime}}</span>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <el-carousel :interval="4000" trigger="click" type="card" height="300px" class="hotInfo">
+            <el-carousel-item
+              class="item"
+              v-for="item in this.qq_HotSongList.list.slice(0,6)"
+              :key="item.dissid"
+              :style="{backgroundImage: 'url(' + item.imgurl + ')'}"
+            >
+              <img :src="item.imgurl" alt srcset class="img">
+              <div class="itemInfo">
+                <div class="itemName">{{item.dissname}}</div>
+                <span class="itemTag">{{item.creator.name}}</span>
+                <span class="itemDescription">{{item.createtime}}</span>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
         </div>
         <div class="newSongList">
           <div class="newTitle">最新歌单</div>
@@ -134,6 +162,7 @@
         >敬请期待</span>
       </div>
     </mu-container>
+    <el-backtop target=".musicBox-container"></el-backtop>
   </div>
 </template>
 
@@ -146,10 +175,26 @@ import musicApi from "@suen/music-api";
 export default {
   data() {
     return {
-      active2: 0
+      active2: 0,
+      loading1: false,
+      loading2: false,
+      count1: 20,
+      count2: 20
     };
   },
   computed: {
+    noMore1() {
+      return this.count1 >= 60;
+    },
+    disabled1() {
+      return this.loading1 || this.noMore1;
+    },
+    noMore2() {
+      return this.count2 >= 60;
+    },
+    disabled2() {
+      return this.loading2 || this.noMore2;
+    },
     ...mapGetters([
       "wy_HotSongList",
       "wy_BoutiqueSongList",
@@ -189,60 +234,31 @@ export default {
     });
     $.ajax({
       type: "get",
-      url: "https://v1.itooi.cn/netease/songList/hot?cat=全部&pageSize=60",
+      url: "https://v1.itooi.cn/netease/songList/hot?cat=全部&pageSize=20",
       ContentType: "application/x-www-form-urlencoded",
       dataType: "json",
       success: jsData => {
         // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
         this.$nextTick(() => {
           this.set_WY_HotSongList({ data: jsData.data });
-          // console.log(jsData)
+          // console.log(jsData);
         });
       }
     });
-    $.ajax({
-      type: "get",
-      url:
-        "https://v1.itooi.cn/netease/songList/highQuality?cat=全部&pageSize=60",
-      ContentType: "application/x-www-form-urlencoded",
-      dataType: "json",
-      success: jsData => {
-        // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-        this.$nextTick(() => {
-          this.set_WY_BoutiqueSongList({ data: jsData.data });
-          // console.log(jsData)
-        });
-      }
-    });
-  },
-  mounted() {
-    var moveElem = $(".itemBox")[0]; //待拖拽元素
-    var tLeft, tTop, moveX; //鼠标按下时相对于选中元素的位移
-
-    //监听鼠标按下事件
-    document.addEventListener("mousedown", function(e) {
-      if (e.target == moveElem) {
-        var moveElemRect = moveElem.getBoundingClientRect();
-        tLeft = e.clientX; //鼠标按下时的x坐标
-      }
-    });
-
-    //监听鼠标放开事件
-    document.addEventListener("mouseup", function(e) {
-      moveX = e.clientX - tLeft;
-      // console.log(moveX);
-      var boxInfo = moveElem.getBoundingClientRect();
-      if (moveX + boxInfo.left > 0) {
-        moveElem.style.left = "0px";
-      } else if (
-        moveX + boxInfo.left <
-        -3264 + $(".mainContainer")[0].offsetWidth
-      ) {
-        moveElem.style.left = -3264 + $(".mainContainer")[0].offsetWidth + "px";
-      } else {
-        moveElem.style.left = moveX * 1.1 + boxInfo.left + "px";
-      }
-    });
+    // $.ajax({
+    //   type: "get",
+    //   url:
+    //     "https://v1.itooi.cn/netease/songList/highQuality?cat=全部&pageSize=20",
+    //   ContentType: "application/x-www-form-urlencoded",
+    //   dataType: "json",
+    //   success: jsData => {
+    //     // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
+    //     this.$nextTick(() => {
+    //       this.set_WY_BoutiqueSongList({ data: jsData.data });
+    //       // console.log(jsData)
+    //     });
+    //   }
+    // });
   },
   methods: {
     ...mapActions([
@@ -252,6 +268,58 @@ export default {
       "set_QQ_HotSongList",
       "set_QQ_BoutiqueSongList"
     ]),
+    loadMore1: function() {
+      if (this.count1 < 60) {
+        this.loading1 = true;
+        //官方示例中延迟了1秒，防止滚动条滚动时的频繁请求数据
+        setTimeout(() => {
+          //这里请求接口去拿数据，实际应该是调用一个请求数据的方法
+          $.ajax({
+            type: "get",
+            url:
+              "https://v1.itooi.cn/netease/songList/hot?cat=全部&pageSize=" +
+              this.count1,
+            ContentType: "application/x-www-form-urlencoded",
+            dataType: "json",
+            success: jsData => {
+              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
+              this.$nextTick(() => {
+                this.set_WY_HotSongList({ data: jsData.data });
+                this.loading1 = false;
+                this.count1 += 20;
+                // console.log(jsData);
+              });
+            }
+          });
+        }, 500);
+      }
+    },
+    loadMore2: function() {
+      if (this.count2 < 60 && this.count1 == 60) {
+        this.loading2 = true;
+        //官方示例中延迟了1秒，防止滚动条滚动时的频繁请求数据
+        setTimeout(() => {
+          // 这里请求接口去拿数据，实际应该是调用一个请求数据的方法
+          $.ajax({
+            type: "get",
+            url:
+              "https://v1.itooi.cn/netease/songList/highQuality?cat=全部&pageSize=" +
+              this.count2,
+            ContentType: "application/x-www-form-urlencoded",
+            dataType: "json",
+            success: jsData => {
+              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
+              this.$nextTick(() => {
+                this.set_WY_BoutiqueSongList({ data: jsData.data });
+                this.loading2 = false;
+                this.count2 += 20;
+                // console.log(jsData)
+              });
+            }
+          });
+        }, 500);
+      }
+    },
     goSongListDetails(id) {
       this.$router.push({ name: "songListDetails", params: { id } });
     },
@@ -303,73 +371,47 @@ export default {
         line-height: 30px;
         margin-left: 20px;
       }
-      .infoBox {
-        height: 120px;
-        overflow: hidden;
-        width: 100%;
-        position: relative;
-        background-color: #e9e9e9;
-        .itemBox {
-          z-index: 1000;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          transition: all 0.5s ease;
-          -webkit-transform: all 0.5s ease;
-          position: relative;
-          top: 0px;
-          left: 0px;
-          height: 100%;
-          width: 3264px;
-          // width: 250%;
-          // display: flex;
-          // justify-content: space-between;
-          // flex-wrap: wrap;
-          cursor: pointer;
-          .item {
+      // .el-carousel__item:nth-child(2n) {
+      //   background-color: #99a9bf;
+      // }
+
+      // .el-carousel__item:nth-child(2n + 1) {
+      //   background-color: #d3dce6;
+      // }
+      .hotInfo {
+        .item {
+          background-size: 5000%;
+          img {
             float: left;
-            width: 358px;
-            height: 120px;
-            margin-right: 50px;
-            transition: all 0.5s ease;
-            // &:hover {
-            //   background-color: #e9e9e9;
-            // }
-            .img {
-              margin-top: 8px;
-              margin-left: 20px;
-              width: 104px;
-              height: 104px;
-              float: left;
-              background-color: rgba(234, 0, 255, 0.678);
+            height: 300px;
+          }
+          .itemInfo {
+            float: left;
+            margin-left: 20px;
+            .itemName {
+              margin-top: 80px;
+              width: 290px;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              color: #fff;
+              display: block;
+              line-height: 50px;
+              font-size: 30px;
+              font-weight: 700;
+              line-height: 50px;
             }
-            .itemInfo {
-              float: left;
-              margin-left: 10px;
-              .itemName {
-                width: 200px;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-                display: block;
-                line-height: 20px;
-                font-size: 18px;
-                font-weight: 700;
-                line-height: 50px;
-              }
-              .itemTag,
-              .itemDescription {
-                width: 200px;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-                line-height: 20px;
-                display: block;
-                line-height: 20px;
-                color: #666;
-              }
+            .itemTag,
+            .itemDescription {
+              width: 290px;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              font-size: 20px;
+              line-height: 50px;
+              display: block;
+              line-height: 50px;
+              color: #ccc;
             }
           }
         }

@@ -12,7 +12,7 @@ import "./assets/iconFont/iconfont.css";
 Vue.config.productionTip = false;
 
 
-import "./listen1-api.js";
+// import "./listen1-api.js";
 // const listen1Api = require("./listen1-api.min.js");
 
 //引入这个懒加载插件
@@ -21,14 +21,21 @@ import VueLazyload from 'vue-lazyload';
 // Vue.use(VueLazyload);
 // 或者提娜佳配置项
 Vue.use(VueLazyload, {
-  // preLoad: 1.3,
+  preLoad: 1.3,
   // error: 'dist/error.png',
   loading: './assets/images/loading.gif',
-  // attempt: 1，
+  attempt: 1,
   // the default is ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend']
-  // listenEvents: [ 'scroll' ]
+  listenEvents: [ 'scroll' ]
 })
 
+import { Carousel, CarouselItem, Backtop } from 'element-ui';
+Vue.component(Carousel.name, Carousel);
+Vue.component(CarouselItem.name, CarouselItem);
+Vue.component(Backtop.name, Backtop);
+
+import infiniteScroll from 'vue-infinite-scroll'
+Vue.use(infiniteScroll)
 
 // 导入muse-ui
 import MuseUI from "muse-ui";

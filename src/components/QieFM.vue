@@ -105,7 +105,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["setSongPlayUrl", "setPrevPlayList"]),
+    ...mapActions(["setSongPlayUrl", "setPrevPlayList", "setPrevPlaySong"]),
     handleScroll() {
       if ($(".mainContainer").scrollTop() > 0) {
         this.titleActive = true;
@@ -157,6 +157,7 @@ export default {
       this.setSongPlayUrl({
         url: `http://ws.stream.fm.qq.com/vfm.tc.qq.com/R196${strMid}.m4a?fromtag=36&vkey=98837D0874E15B38FB695D0A78FF157379BCD2F8515C42A2E57B9E9B58C78C58C8093F96E2A9A6AA66D273AB647D42FBAF2BF882425C245B&guid=10000`
       });
+      this.setPrevPlaySong({obj:""});
     },
     // 转化时间戳
     toTime(time) {

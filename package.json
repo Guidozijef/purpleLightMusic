@@ -12,7 +12,7 @@
   "dependencies": {
     "@suen/music-api": "^1.1.9",
     "axios": "^0.18.0",
-    "element-ui": "^2.7.2",
+    "element-ui": "^2.9.1",
     "jquery": "^3.4.0",
     "muse-ui": "^3.0.2",
     "muse-ui-message": "^0.2.1",
@@ -54,6 +54,7 @@
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-infinite-scroll": "^2.0.2",
     "vue-lazyload": "^1.2.6",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
