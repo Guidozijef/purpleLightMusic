@@ -1,11 +1,11 @@
 <template>
   <div class="homePage-container">
-    <div class="leftImgBox">
+    <div class="leftImgBox" :style="{'height':containerHeight}">
       <div class="img">
         <img :src="prevPlayList.coverImgUrl" alt srcset>
       </div>
       <span class="detailsName">{{prevPlayList.name}}</span>
-      <span class="detailsTag">{{prevPlayList.tags.join("，")}}</span>
+      <span class="detailsTag">{{prevPlayList.tags.length > 0 ? prevPlayList.tags.join("，") : prevPlayList.tags[0]}}</span>
       <span class="details">{{prevPlayList.description}}</span>
     </div>
     <div class="rightSongList">
@@ -58,7 +58,8 @@ export default {
       bgEven: false,
       dataList: {},
       addSongList: [],
-      open: false
+      open: false,
+      containerHeight: window.innerHeight - 122 + "px"
     };
   },
   computed: {
@@ -105,7 +106,6 @@ export default {
   .leftImgBox {
     position: fixed;
     width: 400px;
-    height: 510px;
     border-right: 1px solid #9b9b9b;
     .img {
       text-align: center;

@@ -38,10 +38,9 @@
       <div class="FMList">
         <ul>
           <li
-            v-for="(item, n) in this.prevPlayList.showList"
-            :key="n"
-            class="FMItem"
-            :class="{bgEven :(n + 1) % 2 == 0 ? true : false}"
+            v-for="(item, m) in this.prevPlayList.showList"
+            :key="m"
+            :class="{bgEven :(m%2 == 0) ? true : false, FMItem:true}"
             @click="goPlayFM(item.show.strMid)"
           >
             <div class="time">{{toTime(item.show.createTime)}}</div>
@@ -61,6 +60,7 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      bgEven: false,
       FMData: [
         { id: "39104", type: "情感生活", albumData: [] },
         { id: "39110", type: "音乐电台", albumData: [] },
@@ -171,7 +171,7 @@ export default {
       var m = date.getMinutes() + ":";
       var s = date.getSeconds();
       // console.log(Y + M + D);
-      return Y + M + D
+      return Y + M + D;
     }
   }
 };
@@ -217,7 +217,7 @@ export default {
           width: 80px;
           height: 80px;
           border-radius: 50%;
-          background-color:#6b3c71;
+          background-color: #6b3c71;
           overflow: hidden;
           img {
             width: 100%;
@@ -281,7 +281,7 @@ export default {
       }
     }
     .infoBox {
-      transition: all 0.5s linear;
+      // transition: all 0.5s linear;
       height: 240px;
       .songListCover {
         width: 200px;
@@ -319,11 +319,12 @@ export default {
         }
       }
     }
+    .bgEven {
+      background-color: #f9f9f9;
+    }
     .FMList {
       padding: 0 15px;
-      .bgEven {
-        background-color: #f9f9f9;
-      }
+
       .FMItem {
         cursor: pointer;
         height: 52px;

@@ -1,6 +1,6 @@
 <template>
   <div class="Self-container">
-    <div class="self-left">
+    <div class="self-left" :style="{'height':containerHeight}">
       <div>
         <div class="selfTitle">
           我的歌单
@@ -60,55 +60,58 @@
         <span>导入网易歌单</span>
       </div>
     </div>
-    <div class="self-right" v-if="this.importUserInfo.code">
-      <div :class="titleActive ? 'titleActive' : 'infoBox'">
-        <div class="songListCover" v-if="prevPlayList">
-          <img :src="prevPlayList.coverImgUrl" alt srcset>
-        </div>
-        <div class="songListInfoBox">
-          <span class="songListName">{{prevPlayList.name}}</span>
-          <span class="songListDescription">{{prevPlayList.description}}</span>
-          <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
-            <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
-            <span calss="number" style="margin-right:5px;">共播放{{prevPlayList.playCount}}次</span>
+      <div class="self-right" v-if="this.importUserInfo.code">
+        <div :class="titleActive ? 'titleActive' : 'infoBox'">
+          <div class="songListCover" v-if="prevPlayList">
+            <img :src="prevPlayList.coverImgUrl" alt srcset>
+          </div>
+          <div class="songListInfoBox">
+            <span class="songListName">{{prevPlayList.name}}</span>
+            <span class="songListDescription">{{prevPlayList.description}}</span>
+            <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
+              <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
+              <span calss="number" style="margin-right:5px;">共播放{{prevPlayList.playCount}}次</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="songList">
-        <ul>
-          <li style="background-color: #e0e0e0;">
-            <span class="idx"></span>
-            <span class="songName">歌曲</span>
-            <span class="songer">歌手</span>
-            <span class="songAr">专辑</span>
-          </li>
-          <li
-            v-for="(item, index) in prevPlayList.tracks"
-            :key="index"
-            :class="{bgEven :(index + 1) % 2 == 0 ? true : false}"
-          >
-            <span class="idx">{{index + 1}}</span>
-            <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
-            <span class="songer">{{item.ar[0].name}}</span>
-            <span class="songAr">{{item.al.name}}</span>
-            <div class="itemControl">
-              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
-              <mu-menu placement="top-start">
-                <span
-                  class="iconfont icon-gengduo5"
-                  style="cursor: pointer;margin-top:-5px;"
-                  ref="button"
-                  title="添加到歌单"
-                ></span>
-                <mu-list slot="content">
-                  <mu-list-item button v-for="(m, n) in addSongList" :key="n">
-                    <mu-list-item-title><div @click="addSongObj(item.id, m.name)">{{m.name}}</div></mu-list-item-title>
-                  </mu-list-item>
-                </mu-list>
-              </mu-menu>
-            </div>
-          </li>
-        </ul>
+        <div class="songList">
+          <ul>
+            <li style="background-color: #e0e0e0;">
+              <span class="idx"></span>
+              <span class="songName">歌曲</span>
+              <span class="songer">歌手</span>
+              <span class="songAr">专辑</span>
+            </li>
+            <li
+              v-for="(item, index) in prevPlayList.tracks"
+              :key="index"
+              :class="{bgEven :(index + 1) % 2 == 0 ? true : false}"
+            >
+              <span class="idx">{{index + 1}}</span>
+              <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
+              <span class="songer">{{item.ar[0].name}}</span>
+              <span class="songAr">{{item.al.name}}</span>
+              <div class="itemControl">
+                <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
+                <mu-menu placement="top-start">
+                  <span
+                    class="iconfont icon-gengduo5"
+                    style="cursor: pointer;margin-top:-5px;"
+                    ref="button"
+                    title="添加到歌单"
+                  ></span>
+                  <mu-list slot="content">
+                    <mu-list-item button v-for="(m, n) in addSongList" :key="n">
+                      <mu-list-item-title>
+                        <div @click="addSongObj(item.id, m.name)">{{m.name}}</div>
+                      </mu-list-item-title>
+                    </mu-list-item>
+                  </mu-list>
+                </mu-menu>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -119,7 +122,8 @@ export default {
   data() {
     return {
       addSongList: [], // 创建的歌单
-      titleActive: false
+      titleActive: false,
+      containerHeight: window.innerHeight - 122 + "px"
     };
   },
   computed: {
@@ -240,7 +244,7 @@ export default {
       });
     },
     addSongObj(songId, songListName) {
-      this.addSongList.forEach((item)=> {
+      this.addSongList.forEach(item => {
         if (songListName === item.name) {
           this.prevPlayList.tracks.forEach(itemSong => {
             if (songId === itemSong.id) {
@@ -259,7 +263,6 @@ export default {
   .self-left {
     position: fixed;
     width: 300px;
-    height: 510px;
     border-right: 1px solid #9b9b9b;
     overflow-y: auto;
     overflow-x: hidden;
@@ -379,7 +382,6 @@ export default {
       }
     }
     .infoBox {
-      transition: all 0.5s linear;
       height: 240px;
       .songListCover {
         width: 200px;
@@ -445,7 +447,7 @@ export default {
             }
           }
           .idx {
-            color:#6B3C71;
+            color: #6b3c71;
             line-height: 40px;
             text-align: center;
             display: inline-block;

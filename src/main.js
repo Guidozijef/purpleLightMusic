@@ -18,16 +18,16 @@ import "./listen1-api.js";
 //引入这个懒加载插件
 import VueLazyload from 'vue-lazyload'; 
 
-Vue.use(VueLazyload);
+// Vue.use(VueLazyload);
 // 或者提娜佳配置项
-// Vue.use(VueLazyload, {
-//   preLoad: 1.3,
-//   error: 'dist/error.png',
-//   loading: 'dist/loading.gif',
-//   attempt: 1，
+Vue.use(VueLazyload, {
+  // preLoad: 1.3,
+  // error: 'dist/error.png',
+  loading: './assets/images/loading.gif',
+  // attempt: 1，
   // the default is ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend']
   // listenEvents: [ 'scroll' ]
-// })
+})
 
 
 // 导入muse-ui

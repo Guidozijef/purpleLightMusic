@@ -3,7 +3,7 @@
     <div
       class="bg"
       v-if="this.prevPlaySong"
-      :style="{backgroundImage: 'url(' + this.prevPlaySong.al.picUrl + ')'}"
+      :style="{backgroundImage: 'url(' + this.prevPlaySong.al.picUrl + ')','height':containerHeight}"
     ></div>
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
@@ -115,8 +115,16 @@ export default {
           break;
         case "qq":
           this.$nextTick(() => {
-            this.setSongPlayUrl({ url: `https://v1.itooi.cn/tencent/url?id=${this.$route.params.songId}&quality=128` });
-            this.setSongPlayLrc({ lrc: `https://v1.itooi.cn/tencent/lrc?id=${this.$route.params.songId}`});
+            this.setSongPlayUrl({
+              url: `https://v1.itooi.cn/tencent/url?id=${
+                this.$route.params.songId
+              }&quality=128`
+            });
+            this.setSongPlayLrc({
+              lrc: `https://v1.itooi.cn/tencent/lrc?id=${
+                this.$route.params.songId
+              }`
+            });
           });
           break;
 
@@ -169,8 +177,10 @@ export default {
     ...mapActions(["setSongPlayUrl", "setPrevPlaySong", "setSongPlayLrc"]),
     // 计算歌词居中的 top值
     clacTop() {
-      let height = this.$refs.musicLyric.offsetHeight;
-      this.top = Math.floor(height / 35 / 2);
+      if (this.songPlayLrc.length) {
+        let height = this.$refs.musicLyric.offsetHeight;
+        this.top = Math.floor(height / 35 / 2);
+      }
     }
   },
   watch: {
@@ -199,7 +209,6 @@ export default {
   height: 100%;
   .bg {
     width: 100%;
-    height: 510px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
