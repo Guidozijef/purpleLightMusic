@@ -23,16 +23,19 @@ import VueLazyload from 'vue-lazyload';
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   // error: 'dist/error.png',
-  loading: 'http://zijef.pw/purpleLightMusic/assets/images/loading.gif',
+  loading: './assets/images/loading.gif',
   attempt: 1,
   // the default is ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend']
   listenEvents: [ 'scroll' ]
 })
 
-import { Carousel, CarouselItem, Backtop } from 'element-ui';
+import { Carousel, CarouselItem, Backtop, Dropdown, DropdownItem, DropdownMenu } from 'element-ui';
 Vue.component(Carousel.name, Carousel);
 Vue.component(CarouselItem.name, CarouselItem);
 Vue.component(Backtop.name, Backtop);
+Vue.component(Dropdown.name, Dropdown);
+Vue.component(DropdownItem.name, DropdownItem);
+Vue.component(DropdownMenu.name, DropdownMenu);
 
 import infiniteScroll from 'vue-infinite-scroll'
 Vue.use(infiniteScroll)

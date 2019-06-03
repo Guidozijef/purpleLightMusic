@@ -5,7 +5,9 @@
         <img :src="prevPlayList.coverImgUrl" alt srcset>
       </div>
       <span class="detailsName">{{prevPlayList.name}}</span>
-      <span class="detailsTag">{{prevPlayList.tags.length > 0 ? prevPlayList.tags.join("，") : prevPlayList.tags[0]}}</span>
+      <span
+        class="detailsTag"
+      >{{prevPlayList.tags.length > 0 ? prevPlayList.tags.join("，") : prevPlayList.tags[0]}}</span>
       <span class="details">{{prevPlayList.description}}</span>
     </div>
     <div class="rightSongList">
@@ -28,20 +30,24 @@
             <span class="songer">{{item.ar[0].name}}</span>
             <span class="songAr">{{item.al.name}}</span>
             <div class="itemControl">
-              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;"></span>
-              <mu-menu placement="top-start">
+              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
+              <el-dropdown @command="handleCommand" trigger="click">
                 <span
-                  class="iconfont icon-gengduo5"
-                  style="cursor: pointer;margin-top:-5px;"
-                  ref="button"
-                  @click="open = !open"
-                ></span>
-                <mu-list slot="content">
-                  <mu-list-item button v-for="(item, index) in addSongList" :key="index">
-                    <mu-list-item-title>{{item.name}}</mu-list-item-title>
-                  </mu-list-item>
-                </mu-list>
-              </mu-menu>
+                  class="el-dropdown-link iconfont icon-gengduo5"
+                  style="cursor: pointer;margin-top:-5px;" title="添加到本地歌单"
+                >
+                  <!-- <span class="iconfont icon-gengduo5" style="cursor: pointer;margin-top:-5px;"></span> -->
+                </span>
+                <el-dropdown-menu
+                  slot="dropdown"
+                  v-for="(addSong, index) in addSongList"
+                  :key="index"
+                >
+                  <el-dropdown-item
+                    :command="{songListId:item.id, songName:addSong.name}"
+                  >{{addSong.name}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
           </li>
         </ul>
@@ -77,7 +83,7 @@ export default {
       success: jsData => {
         // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
         this.$nextTick(() => {
-          this.setPrevPlayList({ obj: jsData.playlist }); 
+          this.setPrevPlayList({ obj: jsData.playlist });
           // console.log(jsData.playlist);
         });
       }
@@ -97,7 +103,24 @@ export default {
         name: "songDetails",
         params: { songId: "wy_" + songId }
       });
-    }
+    },
+    // 点击添加到本地的函数
+    handleCommand(command) {
+      this.prevPlayList.tracks.forEach((item, n) => {
+        if (command.songListId == item.id) {
+          // 循环本地歌单，如果名字相同，就表示为当前要添加到的哪个歌单
+          this.addSongList.forEach((ele, m) => {
+            if (command.songName == ele.name) {
+              ele.tracks.unshift(item);
+              ele.img = ele.coverImgUrl = ele.tracks[0].al.picUrl;
+              this.$toast.success("添加成功");
+              localStorage.setItem("addList", JSON.stringify(this.addSongList));
+            }
+          });
+        }
+      });
+      // this.$message("click on item " + command);
+    },
   }
 };
 </script>

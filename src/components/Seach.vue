@@ -1,6 +1,6 @@
 <template>
   <div class="Self-container">
-    <div class="self-left">
+    <div class="self-left" :style="{'height':containerHeight}">
       <div class="seachType">
         <div class="wangyiyun">
           <mu-radio v-model="type" value="wy"></mu-radio>
@@ -64,7 +64,26 @@
             <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
             <span class="songer">{{item.ar[0].name}}</span>
             <span class="songAr">{{item.al.name}}</span>
-            
+            <div class="itemControl">
+              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
+              <el-dropdown @command="handleCommand" trigger="click">
+                <span
+                  class="el-dropdown-link iconfont icon-gengduo5"
+                  style="cursor: pointer;margin-top:-5px;" title="添加到本地歌单"
+                >
+                  <!-- <span class="iconfont icon-gengduo5" style="cursor: pointer;margin-top:-5px;"></span> -->
+                </span>
+                <el-dropdown-menu
+                  slot="dropdown"
+                  v-for="(addSong, index) in addSongList"
+                  :key="index"
+                >
+                  <el-dropdown-item
+                    :command="{songListId:item.id, songListName:addSong.name}"
+                  >{{addSong.name}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
           </li>
         </ul>
       </div>
@@ -72,15 +91,23 @@
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters} from "vuex";
 export default {
   data() {
     return {
       seachData: "",
-      type: "wy"
+      type: "wy",
+      containerHeight: window.innerHeight - 122 + "px",
+      addSongList: []
     };
   },
+  computed: {
+    ...mapGetters([
+      "prevPlayList",
+    ]),
+  },
   created() {
+    this.addSongList = JSON.parse(localStorage.getItem("addList"));
     // $.ajax({
     //   type: "get",
     //   url: "https://api.imjad.cn/cloudmusic/",
@@ -109,13 +136,22 @@ export default {
       success: resultData => {
         this.$nextTick(() => {
           this.seachData = resultData.data.songs;
-          // console.log(data);
+          let seachObj = {
+            coverImgUrl: resultData.data.songs[0].al.picUrl,
+            creator: "",
+            img: resultData.data.songs[0].al.picUrl,
+            name: this.$route.params.seachValue,
+            trackCount: resultData.data.songs.length
+          };
+          seachObj.tracks = resultData.data.songs;
+          this.setPrevPlayList({ obj: seachObj });
+          // console.log(resultData);
         });
       }
     });
   },
   methods: {
-    ...mapActions(["setPrevPlaySong"]),
+    ...mapActions(["setPrevPlaySong", "setPrevPlayList"]),
     goSongDetails(songId) {
       this.seachData.forEach(item => {
         if (item.id == songId) {
@@ -126,6 +162,23 @@ export default {
         name: "songDetails",
         params: { songId: this.type + "_" + songId }
       });
+    },
+    // 点击添加到本地的函数
+    handleCommand(command) {
+      this.prevPlayList.tracks.forEach((item, n) => {
+        if (command.songListId == item.id) {
+          // 循环本地歌单，如果名字相同，就表示为当前要添加到的哪个歌单
+          this.addSongList.forEach((ele, m) => {
+            if (command.songListName == ele.name) {
+              ele.tracks.unshift(item);
+              ele.img = ele.coverImgUrl = ele.tracks[0].al.picUrl;
+              this.$toast.success("添加成功");
+              localStorage.setItem("addList", JSON.stringify(this.addSongList));
+            }
+          });
+        }
+      });
+      // this.$message("click on item " + command);
     }
   },
   watch: {
@@ -140,6 +193,15 @@ export default {
           success: resultData => {
             this.$nextTick(() => {
               this.seachData = resultData.data.songs;
+              let seachObj = {
+                coverImgUrl: resultData.data.songs[0].al.picUrl,
+                creator: "",
+                img: resultData.data.songs[0].al.picUrl,
+                name: this.$route.params.seachValue,
+                trackCount: resultData.data.songs.length
+              };
+              seachObj.tracks = resultData.data.songs;
+              this.setPrevPlayList({ obj: seachObj });
               // console.log(data);
             });
           }
@@ -147,7 +209,9 @@ export default {
       } else if (val == "qq") {
         $.ajax({
           type: "get",
-          url: `https://v1.itooi.cn/tencent/search?keyword=${this.$route.params.seachValue}&type=song&pageSize=30&page=0`,
+          url: `https://v1.itooi.cn/tencent/search?keyword=${
+            this.$route.params.seachValue
+          }&type=song&pageSize=30&page=0`,
           dataType: "json",
           success: resultData => {
             this.$nextTick(() => {
@@ -160,7 +224,10 @@ export default {
                 obj.name = item.songname;
                 obj.id = item.songmid;
                 obj.ar = item.singer;
-                obj.al = { name: item.albumname, picUrl: `https://v1.itooi.cn/tencent/pic?id=${item.songmid}` };
+                obj.al = {
+                  name: item.albumname,
+                  picUrl: `https://v1.itooi.cn/tencent/pic?id=${item.songmid}`
+                };
                 // obj.ar[0].name = item.singer;
                 // obj.al.name = item.name;
                 // obj.al.picUrl = item.pic;
@@ -230,7 +297,22 @@ export default {
           width: 100%;
           line-height: 40px;
           &:hover {
-            background-color: #e0e0e0;
+            // background-color: #e0e0e0;
+            background: -webkit-gradient(
+              linear,
+              0 0,
+              0 bottom,
+              from(#9530a330),
+              to(#dedfdf)
+            );
+            .itemControl {
+              display: inline-block;
+              span {
+                // color:#fff;
+                font-size: 20px;
+                display: inline-block;
+              }
+            }
           }
           .idx {
             text-align: center;
@@ -267,6 +349,13 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             font-size: 14px;
+          }
+          .itemControl {
+            display: none;
+            float: right;
+            margin-right: 20px;
+            font-size: 20px;
+            width: 50px;
           }
         }
       }

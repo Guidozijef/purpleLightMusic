@@ -177,7 +177,7 @@ export default {
     ...mapActions(["setSongPlayUrl", "setPrevPlaySong", "setSongPlayLrc"]),
     // 计算歌词居中的 top值
     clacTop() {
-      if (this.songPlayLrc.length) {
+      if (this.$refs.musicLyric) {
         let height = this.$refs.musicLyric.offsetHeight;
         this.top = Math.floor(height / 35 / 2);
       }

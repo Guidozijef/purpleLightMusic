@@ -26,7 +26,7 @@
                 <span
                   calss="number"
                   style="margin-right:5px;"
-                >{{item.trackCount}}首 by {{item.creator}}</span>
+                >{{item.tracks.length}}首 by {{item.creator}}</span>
               </div>
             </div>
           </li>
@@ -60,7 +60,7 @@
         <span>导入网易歌单</span>
       </div>
     </div>
-      <div class="self-right" v-if="this.importUserInfo.code">
+      <div class="self-right" v-if="this.importUserInfo.code || this.prevPlayList.name">
         <div :class="titleActive ? 'titleActive' : 'infoBox'">
           <div class="songListCover" v-if="prevPlayList">
             <img :src="prevPlayList.coverImgUrl" alt srcset>
@@ -70,7 +70,7 @@
             <span class="songListDescription">{{prevPlayList.description}}</span>
             <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
               <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
-              <span calss="number" style="margin-right:5px;">共播放{{prevPlayList.playCount}}次</span>
+              <span calss="number" style="margin-right:5px;" v-if="prevPlayList.playCount">共播放{{prevPlayList.playCount}}次</span>
             </div>
           </div>
         </div>
@@ -93,21 +93,23 @@
               <span class="songAr">{{item.al.name}}</span>
               <div class="itemControl">
                 <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
-                <mu-menu placement="top-start">
-                  <span
-                    class="iconfont icon-gengduo5"
-                    style="cursor: pointer;margin-top:-5px;"
-                    ref="button"
-                    title="添加到歌单"
-                  ></span>
-                  <mu-list slot="content">
-                    <mu-list-item button v-for="(m, n) in addSongList" :key="n">
-                      <mu-list-item-title>
-                        <div @click="addSongObj(item.id, m.name)">{{m.name}}</div>
-                      </mu-list-item-title>
-                    </mu-list-item>
-                  </mu-list>
-                </mu-menu>
+                <el-dropdown @command="handleCommand">
+                <span
+                  class="el-dropdown-link iconfont icon-gengduo5"
+                  style="cursor: pointer;margin-top:-5px;"
+                >
+                  <!-- <span class="iconfont icon-gengduo5" style="cursor: pointer;margin-top:-5px;"></span> -->
+                </span>
+                <el-dropdown-menu
+                  slot="dropdown"
+                  v-for="(addSong, index) in addSongList"
+                  :key="index"
+                >
+                  <el-dropdown-item
+                    :command="{songListId:item.id, songName:addSong.name}"
+                  >{{addSong.name}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
               </div>
             </li>
           </ul>
@@ -123,7 +125,7 @@ export default {
     return {
       addSongList: [], // 创建的歌单
       titleActive: false,
-      containerHeight: window.innerHeight - 122 + "px"
+      containerHeight: window.innerHeight - 122 + "px",
     };
   },
   computed: {
@@ -201,7 +203,8 @@ export default {
     },
     goSongList(songListName) {
       JSON.parse(localStorage.getItem("addList")).forEach(ele => {
-        if (ele.name === songListName) {
+        if (ele.name == songListName) {
+          ele.trackCount = ele.tracks.length;
           this.setPrevPlayList({ obj: ele });
         }
       });
@@ -229,11 +232,12 @@ export default {
         if (result) {
           let obj = {
             name: value,
+            coverImgUrl:"http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1",
             img:
               "http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1",
             creator: "my",
             tracks: [],
-            trackCount: 0
+            trackCount: 0,
           };
           this.addSongList.push(obj);
           // this.setHistory(this.addSongList);
@@ -243,18 +247,23 @@ export default {
         }
       });
     },
-    addSongObj(songId, songListName) {
-      this.addSongList.forEach(item => {
-        if (songListName === item.name) {
-          this.prevPlayList.tracks.forEach(itemSong => {
-            if (songId === itemSong.id) {
-              item.tracks.push(itemSong);
+    // 点击添加到本地的函数
+    handleCommand(command) {
+      this.prevPlayList.tracks.forEach((item, n) => {
+        if (command.songListId == item.id) {
+          // 循环本地歌单，如果名字相同，就表示为当前要添加到的哪个歌单
+          this.addSongList.forEach((ele, m) => {
+            if (command.songName == ele.name) {
+              ele.tracks.unshift(item);
+              ele.img = ele.coverImgUrl = ele.tracks[0].al.picUrl;
+              this.$toast.success("添加成功");
+              localStorage.setItem("addList", JSON.stringify(this.addSongList));
             }
           });
         }
       });
-      localStorage.setItem("addList", JSON.stringify(this.addSongList));
-    }
+      // this.$message("click on item " + command);
+    },
   }
 };
 </script>
