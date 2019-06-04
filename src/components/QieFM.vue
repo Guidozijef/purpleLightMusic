@@ -126,7 +126,7 @@ export default {
             if (jsData.length > 100) {
               jsData.length = 100;
             }
-            let albumIDList = jsData;
+            let albumIDList = jsData || [];
             // console.log(albumIDList);
             $.ajax({
               type: "get",
@@ -161,7 +161,7 @@ export default {
     },
     // 转化时间戳
     toTime(time) {
-      var date = new Date(1398250549490);
+      var date = new Date(time);
       var Y = date.getFullYear() + "/";
       var M =
         (date.getMonth() + 1 < 10

@@ -17,23 +17,21 @@
               :key="item.playlist.id"
               :style="{backgroundImage: 'url(' + item.playlist.coverImgUrl + ')'}"
             >
-              <img
-                :src="item.playlist.coverImgUrl"
-                alt
-                srcset
-                class="img"
-                ondragstart="return false;"
-              >
-              <div class="itemInfo">
-                <div
-                  class="itemName"
-                  :title="item.playlist.name"
-                  @click="goSongListDetails(item.playlist.id)"
-                >{{item.playlist.name}}</div>
-                <span
-                  class="itemTag"
-                >{{item.playlist.tags.length ? item.playlist.tags.join(",") : item.playlist.tags[0]}}</span>
-                <span class="itemDescription">{{item.playlist.description}}</span>
+              <div @click="goSongListDetails(item.playlist.id)">
+                <img
+                  :src="item.playlist.coverImgUrl"
+                  alt
+                  srcset
+                  class="img"
+                  ondragstart="return false;"
+                >
+                <div class="itemInfo">
+                  <div class="itemName" :title="item.playlist.name">{{item.playlist.name}}</div>
+                  <span
+                    class="itemTag"
+                  >{{item.playlist.tags.length ? item.playlist.tags.join(",") : item.playlist.tags[0]}}</span>
+                  <span class="itemDescription">{{item.playlist.description}}</span>
+                </div>
               </div>
             </el-carousel-item>
           </el-carousel>
@@ -62,7 +60,7 @@
             </li>
           </ul>
           <p v-if="loading1" style="text-align:center;">
-            <img src="../assets/images/loading.gif" alt="" srcset="" style="width:30px;">
+            <img src="../assets/images/loading.gif" alt srcset style="width:30px;">
           </p>
           <p v-if="noMore1" style="text-align:center;">没有更多了</p>
         </div>
@@ -90,7 +88,7 @@
             </li>
           </ul>
           <p v-if="loading2" style="text-align:center;">
-            <img src="../assets/images/loading.gif" alt="" srcset="" style="width:30px;">
+            <img src="../assets/images/loading.gif" alt srcset style="width:30px;">
           </p>
           <p v-if="noMore2" style="text-align:center;">没有更多了</p>
         </div>
@@ -171,7 +169,7 @@
 import $ from "jquery";
 import { mapActions, mapGetters } from "vuex";
 
-import musicApi from "@suen/music-api";
+// import musicApi from "@suen/music-api";
 export default {
   data() {
     return {

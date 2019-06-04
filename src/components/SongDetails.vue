@@ -29,6 +29,12 @@
           v-if="noLyric"
         >暂无歌词！</span>
       </div>
+      <!-- <canvas
+        id="canvas"
+        ref="canvas"
+        width="800"
+        height="600"
+      >Your browser does not support Canvas tag.</canvas> -->
     </div>
   </div>
 </template>
@@ -53,7 +59,8 @@ export default {
       "currentTime",
       "prevPlayList",
       "prevPlaySong",
-      "songPlayLrc"
+      "songPlayLrc",
+      "audioEle"
     ]),
     // lyricTop () {
     //   return `transform :translate3d(0, ${-35 *
@@ -69,6 +76,7 @@ export default {
     }
   },
   created() {
+    // 利用下划线前面的标示，判断是网易云还是qq等等，后面接的数字就为当前的ID
     let re = /[_]/.test(this.$route.params.songId);
     if (re) {
       let type = this.$route.params.songId.split("_")[0];
@@ -173,6 +181,7 @@ export default {
     });
     this.$nextTick(() => this.clacTop());
   },
+
   methods: {
     ...mapActions(["setSongPlayUrl", "setPrevPlaySong", "setSongPlayLrc"]),
     // 计算歌词居中的 top值
@@ -181,7 +190,7 @@ export default {
         let height = this.$refs.musicLyric.offsetHeight;
         this.top = Math.floor(height / 35 / 2);
       }
-    }
+    },
   },
   watch: {
     currentTime(val, oldval) {
