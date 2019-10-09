@@ -213,6 +213,7 @@ export default {
       "440103454"
     ];
     let allData = [];
+    
     idList.forEach(element => {
       $.ajax({
         type: "post",
