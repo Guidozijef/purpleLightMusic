@@ -5,42 +5,42 @@
         <div class="wangyiyun">
           <mu-radio v-model="type" value="wy"></mu-radio>
           <div class="img">
-            <img src="../assets/images/网易云音乐.png" alt srcset>
+            <img src="../assets/images/网易云音乐.png" alt srcset />
           </div>
           <span class="name">网易云</span>
         </div>
         <div class="wangyiyun">
           <mu-radio v-model="type" value="qq"></mu-radio>
           <div class="img">
-            <img src="../assets/images/QQ音乐.png" alt srcset>
+            <img src="../assets/images/QQ音乐.png" alt srcset />
           </div>
           <span class="name">QQ音乐</span>
         </div>
         <div class="wangyiyun">
           <mu-radio v-model="type" value="kg"></mu-radio>
           <div class="img">
-            <img src="../assets/images/酷狗.png" alt srcset>
+            <img src="../assets/images/酷狗.png" alt srcset />
           </div>
           <span class="name">酷狗音乐</span>
         </div>
         <div class="wangyiyun">
           <mu-radio v-model="type" value="kw"></mu-radio>
           <div class="img">
-            <img src="../assets/images/酷我.png" alt srcset>
+            <img src="../assets/images/酷我.png" alt srcset />
           </div>
           <span class="name">酷我音乐</span>
         </div>
         <div class="wangyiyun">
           <mu-radio v-model="type" value="bd"></mu-radio>
           <div class="img">
-            <img src="../assets/images/百度音乐.png" alt srcset>
+            <img src="../assets/images/百度音乐.png" alt srcset />
           </div>
           <span class="name">百度音乐</span>
         </div>
         <div class="wangyiyun">
           <mu-radio v-model="type" value="xm"></mu-radio>
           <div class="img">
-            <img src="../assets/images/虾米音乐.png" alt srcset>
+            <img src="../assets/images/虾米音乐.png" alt srcset />
           </div>
           <span class="name">虾米音乐</span>
         </div>
@@ -62,14 +62,19 @@
           >
             <span class="idx">{{index + 1}}</span>
             <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
-            <span class="songer">{{item.ar[0].name}}</span>
-            <span class="songAr">{{item.al.name}}</span>
+            <span class="songer">
+              {{item.artists.length && item.artists.length == 2
+              ? item.artists[0].name + "/" + item.artists[1].name
+              : item.artists[0].name}}
+            </span>
+            <span class="songAr">{{item.album.name}}</span>
             <div class="itemControl">
               <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
               <el-dropdown @command="handleCommand" trigger="click">
                 <span
                   class="el-dropdown-link iconfont icon-gengduo5"
-                  style="cursor: pointer;margin-top:-5px;" title="添加到本地歌单"
+                  style="cursor: pointer;margin-top:-5px;"
+                  title="添加到本地歌单"
                 >
                   <!-- <span class="iconfont icon-gengduo5" style="cursor: pointer;margin-top:-5px;"></span> -->
                 </span>
@@ -91,7 +96,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -102,50 +107,22 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "prevPlayList",
-    ]),
+    ...mapGetters(["prevPlayList"])
   },
   created() {
     this.addSongList = JSON.parse(localStorage.getItem("addList"));
-    // $.ajax({
-    //   type: "get",
-    //   url: "https://api.imjad.cn/cloudmusic/",
-    //   data: {
-    //     type: "search",
-    //     s: this.$route.params.seachValue
-    //   },
-    //   dataType: "json",
-    //   success: data => {
-    //     this.$nextTick(() => {
-    //       this.seachData = data.result.songs;
-    //       // console.log(data);
-    //     });
-    //   }
-    // });
     $.ajax({
       type: "get",
-      url: `https://v1.itooi.cn/netease/search?keyword=${
-        this.$route.params.seachValue
-      }&type=song&pageSize=20&page=0`,
-      // data: {
-      //   type: "search",
-      //   s: this.$route.params.seachValue
-      // },
+      url: "http://api.mtnhao.com/search",
+      data: {
+        offset: 0,
+        limit: 30,
+        keywords: this.$route.params.seachValue
+      },
       dataType: "json",
-      success: resultData => {
+      success: data => {
         this.$nextTick(() => {
-          this.seachData = resultData.data.songs;
-          let seachObj = {
-            coverImgUrl: resultData.data.songs[0].al.picUrl,
-            creator: "",
-            img: resultData.data.songs[0].al.picUrl,
-            name: this.$route.params.seachValue,
-            trackCount: resultData.data.songs.length
-          };
-          seachObj.tracks = resultData.data.songs;
-          this.setPrevPlayList({ obj: seachObj });
-          // console.log(resultData);
+          this.seachData = data.result.songs;
         });
       }
     });
@@ -155,7 +132,19 @@ export default {
     goSongDetails(songId) {
       this.seachData.forEach(item => {
         if (item.id == songId) {
-          this.setPrevPlaySong({ obj: item });
+          let obj = {
+            al: { picUrl: item.album.artist.img1v1Url, name: item.album.name },
+            ar: [
+              {
+                name:
+                  item.artists.length && item.artists.length == 2
+                    ? item.artists[0].name + "/" + item.artists[1].name
+                    : item.artists[0].name
+              }
+            ],
+            name: item.name
+          };
+          this.setPrevPlaySong({ obj: obj });
         }
       });
       this.$router.push({
@@ -186,9 +175,31 @@ export default {
       if (val == "wy") {
         $.ajax({
           type: "get",
-          url: `https://v1.itooi.cn/netease/search?keyword=${
-            this.$route.params.seachValue
-          }&type=song&pageSize=20&page=0`,
+          url: "http://api.mtnhao.com/search",
+          data: {
+            offset: 0,
+            limit: 30,
+            keywords: this.$route.params.seachValue
+          },
+          dataType: "json",
+          success: data => {
+            this.$nextTick(() => {
+              this.seachData = data.result.songs;
+              let seachObj = {
+                coverImgUrl: resultData.data.songs[0].al.picUrl,
+                creator: "",
+                img: resultData.data.songs[0].al.picUrl,
+                name: this.$route.params.seachValue,
+                trackCount: resultData.data.songs.length
+              };
+              seachObj.tracks = resultData.data.songs;
+              this.setPrevPlayList({ obj: seachObj });
+            });
+          }
+        });
+        $.ajax({
+          type: "get",
+          url: `https://v1.itooi.cn/netease/search?keyword=${this.$route.params.seachValue}&type=song&pageSize=20&page=0`,
           dataType: "json",
           success: resultData => {
             this.$nextTick(() => {
@@ -209,9 +220,7 @@ export default {
       } else if (val == "qq") {
         $.ajax({
           type: "get",
-          url: `https://v1.itooi.cn/tencent/search?keyword=${
-            this.$route.params.seachValue
-          }&type=song&pageSize=30&page=0`,
+          url: `https://v1.itooi.cn/tencent/search?keyword=${this.$route.params.seachValue}&type=song&pageSize=30&page=0`,
           dataType: "json",
           success: resultData => {
             this.$nextTick(() => {

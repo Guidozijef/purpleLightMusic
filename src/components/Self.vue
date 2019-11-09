@@ -166,13 +166,12 @@ export default {
       }).then(({ result, value }) => {
         if (result) {
           $.ajax({
-            type: "post",
-            url: "http://www.gequdaquan.net/gqss/api.php?",
+            type: "get",
+            url: "http://api.mtnhao.com/user/playlist",
             data: {
-              types: "userlist",
               uid: value
             },
-            dataType: "jsonp",
+            dataType: "json",
             success: data => {
               this.$nextTick(() => {
                 this.setImportUserInfo({ data: data });

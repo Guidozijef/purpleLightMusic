@@ -24,7 +24,7 @@
                   srcset
                   class="img"
                   ondragstart="return false;"
-                >
+                />
                 <div class="itemInfo">
                   <div class="itemName" :title="item.playlist.name">{{item.playlist.name}}</div>
                   <span
@@ -38,33 +38,27 @@
         </div>
         <div class="newSongList">
           <div class="newTitle">最新歌单</div>
-          <ul
-            class="itemBox"
-            v-if="wy_HotSongList"
-            v-infinite-scroll="loadMore1"
-            infinite-scroll-disabled="disabled1"
-            infinite-scroll-distance="10"
-          >
+          <ul class="itemBox" v-if="wy_HotSongList">
             <li
               class="item"
               v-for="item in wy_HotSongList"
               :key="item.id"
               @click="goSongListDetails(item.id)"
             >
-              <img v-lazy="item.coverImgUrl" alt srcset class="img">
+              <img v-lazy="item.picUrl" alt srcset class="img" />
               <div class="itemInfo">
                 <div class="itemName" :title="item.name">{{item.name}}</div>
-                <span class="itemTag">{{item.tags.join("，")}}</span>
-                <span class="itemDescription">{{item.description}}</span>
+                <span class="itemTag">{{item.arg}}</span>
+                <span class="itemDescription">{{item.copywriter}}</span>
               </div>
             </li>
           </ul>
           <p v-if="loading1" style="text-align:center;">
-            <img src="../assets/images/loading.gif" alt srcset style="width:30px;">
+            <img src="../assets/images/loading.gif" alt srcset style="width:30px;" />
           </p>
           <p v-if="noMore1" style="text-align:center;">没有更多了</p>
         </div>
-        <div class="boutiqueSongList">
+        <!-- <div class="boutiqueSongList">
           <div class="boutiqueTitle">精品歌单</div>
           <ul
             class="itemBox"
@@ -79,7 +73,7 @@
               :key="item.id"
               @click="goSongListDetails(item.id)"
             >
-              <img v-lazy="item.coverImgUrl" alt srcset class="img">
+              <img v-lazy="item.coverImgUrl" alt srcset class="img" />
               <div class="itemInfo">
                 <div class="itemName" :title="item.name">{{item.name}}</div>
                 <span class="itemTag">{{item.tags.join(",")}}</span>
@@ -88,13 +82,13 @@
             </li>
           </ul>
           <p v-if="loading2" style="text-align:center;">
-            <img src="../assets/images/loading.gif" alt srcset style="width:30px;">
+            <img src="../assets/images/loading.gif" alt srcset style="width:30px;" />
           </p>
           <p v-if="noMore2" style="text-align:center;">没有更多了</p>
-        </div>
+        </div>-->
       </div>
       <div class="musicContiner" v-if="active2 === 1">
-        <div class="hotSongList">
+        <!-- <div class="hotSongList">
           <h3 class="hot">最热门</h3>
           <el-carousel :interval="4000" trigger="click" type="card" height="300px" class="hotInfo">
             <el-carousel-item
@@ -103,7 +97,7 @@
               :key="item.dissid"
               :style="{backgroundImage: 'url(' + item.imgurl + ')'}"
             >
-              <img :src="item.imgurl" alt srcset class="img">
+              <img :src="item.imgurl" alt srcset class="img" />
               <div class="itemInfo">
                 <div class="itemName">{{item.dissname}}</div>
                 <span class="itemTag">{{item.creator.name}}</span>
@@ -111,8 +105,8 @@
               </div>
             </el-carousel-item>
           </el-carousel>
-        </div>
-        <div class="newSongList">
+        </div>-->
+        <!-- <div class="newSongList">
           <div class="newTitle">最新歌单</div>
           <ul class="itemBox" v-if="this.qq_HotSongList">
             <li
@@ -121,7 +115,7 @@
               :key="item.dissid"
               @click="goSongListDetails(item.dissid)"
             >
-              <img v-lazy="item.imgurl" alt srcset class="img">
+              <img v-lazy="item.imgurl" alt srcset class="img" />
               <div class="itemInfo">
                 <div class="itemName">{{item.dissname}}</div>
                 <span class="itemTag">{{item.creator.name}}</span>
@@ -129,7 +123,7 @@
               </div>
             </li>
           </ul>
-        </div>
+        </div>-->
         <div class="boutiqueSongList">
           <div class="boutiqueTitle">精品歌单</div>
           <ul class="itemBox" v-if="this.qq_BoutiqueSongList">
@@ -139,7 +133,7 @@
               :key="item.access_num"
               @click="goSongListDetails(item.id)"
             >
-              <img v-lazy="item.cover_url_medium" alt srcset class="img">
+              <img v-lazy="item.cover_url_medium" alt srcset class="img" />
               <div class="itemInfo">
                 <div class="itemName">{{item.title}}</div>
                 <span class="itemTag">{{item.creator_info.nick}}</span>
@@ -213,7 +207,7 @@ export default {
       "440103454"
     ];
     let allData = [];
-    
+
     idList.forEach(element => {
       $.ajax({
         type: "post",
@@ -233,31 +227,17 @@ export default {
     });
     $.ajax({
       type: "get",
-      url: "https://v1.itooi.cn/netease/songList/hot?cat=全部&pageSize=20",
+      url: "http://api.mtnhao.com/personalized",
       ContentType: "application/x-www-form-urlencoded",
       dataType: "json",
       success: jsData => {
         // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
         this.$nextTick(() => {
-          this.set_WY_HotSongList({ data: jsData.data });
+          this.set_WY_HotSongList({ data: jsData.result });
           // console.log(jsData);
         });
       }
     });
-    // $.ajax({
-    //   type: "get",
-    //   url:
-    //     "https://v1.itooi.cn/netease/songList/highQuality?cat=全部&pageSize=20",
-    //   ContentType: "application/x-www-form-urlencoded",
-    //   dataType: "json",
-    //   success: jsData => {
-    //     // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-    //     this.$nextTick(() => {
-    //       this.set_WY_BoutiqueSongList({ data: jsData.data });
-    //       // console.log(jsData)
-    //     });
-    //   }
-    // });
   },
   methods: {
     ...mapActions([
@@ -267,76 +247,10 @@ export default {
       "set_QQ_HotSongList",
       "set_QQ_BoutiqueSongList"
     ]),
-    loadMore1: function() {
-      if (this.count1 < 60) {
-        this.loading1 = true;
-        //官方示例中延迟了1秒，防止滚动条滚动时的频繁请求数据
-        setTimeout(() => {
-          //这里请求接口去拿数据，实际应该是调用一个请求数据的方法
-          $.ajax({
-            type: "get",
-            url:
-              "https://v1.itooi.cn/netease/songList/hot?cat=全部&pageSize=" +
-              this.count1,
-            ContentType: "application/x-www-form-urlencoded",
-            dataType: "json",
-            success: jsData => {
-              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-              this.$nextTick(() => {
-                this.set_WY_HotSongList({ data: jsData.data });
-                this.loading1 = false;
-                this.count1 += 20;
-                // console.log(jsData);
-              });
-            }
-          });
-        }, 500);
-      }
-    },
-    loadMore2: function() {
-      if (this.count2 < 60 && this.count1 == 60) {
-        this.loading2 = true;
-        //官方示例中延迟了1秒，防止滚动条滚动时的频繁请求数据
-        setTimeout(() => {
-          // 这里请求接口去拿数据，实际应该是调用一个请求数据的方法
-          $.ajax({
-            type: "get",
-            url:
-              "https://v1.itooi.cn/netease/songList/highQuality?cat=全部&pageSize=" +
-              this.count2,
-            ContentType: "application/x-www-form-urlencoded",
-            dataType: "json",
-            success: jsData => {
-              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-              this.$nextTick(() => {
-                this.set_WY_BoutiqueSongList({ data: jsData.data });
-                this.loading2 = false;
-                this.count2 += 20;
-                // console.log(jsData)
-              });
-            }
-          });
-        }, 500);
-      }
-    },
     goSongListDetails(id) {
       this.$router.push({ name: "songListDetails", params: { id } });
     },
     getQQData() {
-      $.ajax({
-        type: "get",
-        url:
-          "https://v1.itooi.cn/tencent/songList/hot?cat=全部&pageSize=60&page=0",
-        ContentType: "application/x-www-form-urlencoded",
-        dataType: "json",
-        success: jsData => {
-          // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
-          this.$nextTick(() => {
-            this.set_QQ_HotSongList({ data: jsData.data });
-            // console.log(jsData);
-          });
-        }
-      });
       $.ajax({
         type: "get",
         url:
