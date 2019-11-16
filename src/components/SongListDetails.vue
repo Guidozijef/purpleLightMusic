@@ -2,7 +2,7 @@
   <div class="homePage-container">
     <div class="leftImgBox" :style="{'height':containerHeight}">
       <div class="img">
-        <img :src="prevPlayList.coverImgUrl" alt srcset>
+        <img :src="(prevPlayList.coverImgUrl).replace('http','https')" alt srcset>
       </div>
       <span class="detailsName">{{prevPlayList.name}}</span>
       <span

@@ -95,7 +95,7 @@
       </div>
       <div class="minBox" v-if="this.prevPlaySong.al" @click="goShowSonging()">
         <div class="minImg">
-          <img :src="this.prevPlaySong.al.picUrl" alt srcset>
+          <img :src="(this.prevPlaySong.al.picUrl).replace('http','https')" alt srcset>
         </div>
         <div class="infoBox">
           <span class="prevsonger">{{this.prevPlaySong.name}}</span>

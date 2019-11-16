@@ -3,12 +3,12 @@
     <div
       class="bg"
       v-if="this.prevPlaySong"
-      :style="{backgroundImage: 'url(' + this.prevPlaySong.al.picUrl + ')','height':containerHeight}"
+      :style="{backgroundImage: 'url(' + (this.prevPlaySong.al.picUrl).replace('http','https') + ')','height':containerHeight}"
     ></div>
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
       <div class="songImg" v-if="this.prevPlaySong">
-        <img :src="this.prevPlaySong.al.picUrl" alt srcset />
+        <img :src="this.prevPlaySong.al.picUrl.replace('http','https')" alt srcset />
       </div>
       <div class="songItem">
         <span class="songer">{{this.prevPlaySong.ar[0].name}}</span>
@@ -101,7 +101,7 @@ export default {
             type: "get",
             url: "https://api.mtnhao.com/lyric",
             data: {
-              id: this.$route.params.songId,
+              id: this.$route.params.songId
             },
             dataType: "json",
             success: dataRic => {
