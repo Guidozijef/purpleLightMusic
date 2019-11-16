@@ -14,23 +14,23 @@
             <el-carousel-item
               class="item"
               v-for="item in this.wy_HottestSongList"
-              :key="item.playlist.id"
-              :style="{backgroundImage: 'url(' + item.playlist.coverImgUrl + ')'}"
+              :key="item.id"
+              :style="{backgroundImage: 'url(' + item.coverImgUrl + ')'}"
             >
-              <div @click="goSongListDetails(item.playlist.id)">
+              <div @click="goSongListDetails(item.id)">
                 <img
-                  :src="item.playlist.coverImgUrl"
+                  :src="item.coverImgUrl"
                   alt
                   srcset
                   class="img"
                   ondragstart="return false;"
                 />
                 <div class="itemInfo">
-                  <div class="itemName" :title="item.playlist.name">{{item.playlist.name}}</div>
+                  <div class="itemName" :title="item.name">{{item.name}}</div>
                   <span
                     class="itemTag"
-                  >{{item.playlist.tags.length ? item.playlist.tags.join(",") : item.playlist.tags[0]}}</span>
-                  <span class="itemDescription">{{item.playlist.description}}</span>
+                  >{{item.tags.length > 0 ? item.tags.join(",") : ""}}</span>
+                  <span class="itemDescription">{{item.description}}</span>
                 </div>
               </div>
             </el-carousel-item>
@@ -48,15 +48,21 @@
               <img v-lazy="item.picUrl" alt srcset class="img" />
               <div class="itemInfo">
                 <div class="itemName" :title="item.name">{{item.name}}</div>
-                <span class="itemTag">{{item.arg}}</span>
                 <span class="itemDescription">{{item.copywriter}}</span>
+                <span class="itemTag">
+                  播放
+                  <i
+                    style="font-weight:700;color:#000;"
+                  >{{(item.playCount).toString().length > 4 ? `${(item.playCount).toString().slice(0,-4)}万` : item.playCount}}</i>
+                  次
+                </span>
               </div>
             </li>
           </ul>
-          <p v-if="loading1" style="text-align:center;">
+          <!-- <p v-if="loading1" style="text-align:center;">
             <img src="../assets/images/loading.gif" alt srcset style="width:30px;" />
           </p>
-          <p v-if="noMore1" style="text-align:center;">没有更多了</p>
+          <p v-if="noMore1" style="text-align:center;">没有更多了</p>-->
         </div>
         <!-- <div class="boutiqueSongList">
           <div class="boutiqueTitle">精品歌单</div>
@@ -170,23 +176,25 @@ export default {
       active2: 0,
       loading1: false,
       loading2: false,
+      noMore1: false,
+      noMore2: false,
       count1: 20,
       count2: 20
     };
   },
   computed: {
-    noMore1() {
-      return this.count1 >= 60;
-    },
-    disabled1() {
-      return this.loading1 || this.noMore1;
-    },
-    noMore2() {
-      return this.count2 >= 60;
-    },
-    disabled2() {
-      return this.loading2 || this.noMore2;
-    },
+    // noMore1() {
+    //   return this.count1 >= 60;
+    // },
+    // disabled1() {
+    //   return this.loading1 || this.noMore1;
+    // },
+    // noMore2() {
+    //   return this.count2 >= 60;
+    // },
+    // disabled2() {
+    //   return this.loading2 || this.noMore2;
+    // },
     ...mapGetters([
       "wy_HotSongList",
       "wy_BoutiqueSongList",
@@ -196,38 +204,32 @@ export default {
     ])
   },
   created() {
-    let idList = [
-      "3778678",
-      "3779629",
-      "4395559",
-      "64016",
-      "112504",
-      "19723756",
-      "2884035",
-      "440103454"
-    ];
-    let allData = [];
+    // let idList = [
+    //   "3778678",
+    //   "3779629",
+    //   "4395559",
+    //   "64016",
+    //   "112504",
+    //   "19723756",
+    //   "2884035",
+    //   "440103454"
+    // ];
 
-    idList.forEach(element => {
-      $.ajax({
-        type: "post",
-        url: "http://www.gequdaquan.net/gqss/api.php?",
-        data: {
-          types: "playlist",
-          id: element
-        },
-        dataType: "jsonp",
-        success: data => {
-          allData.push(data);
-        }
-      });
-    });
-    this.$nextTick(() => {
-      this.set_WY_HottestSongList({ data: allData });
+    $.ajax({
+      type: "get",
+      url: "https://api.mtnhao.com/toplist/detail",
+      ContentType: "application/x-www-form-urlencoded",
+      dataType: "json",
+      success: data => {
+        console.log(data);
+        this.$nextTick(() => {
+          this.set_WY_HottestSongList({ data: data.list });
+        });
+      }
     });
     $.ajax({
       type: "get",
-      url: "http://api.mtnhao.com/personalized",
+      url: "https://api.mtnhao.com/personalized",
       ContentType: "application/x-www-form-urlencoded",
       dataType: "json",
       success: jsData => {

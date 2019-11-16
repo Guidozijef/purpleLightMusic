@@ -21,6 +21,8 @@ export const wy_BoutiqueSongList = state => state.wangyiyun.boutique;
 
 export const qq_HottestSongList = state => state.qq.hottest;
 
+export const qq_allDataList = state => state.qq.allData;
+
 export const qq_HotSongList = state => state.qq.hot;
 // 
 export const qq_BoutiqueSongList = state => state.qq.boutique;

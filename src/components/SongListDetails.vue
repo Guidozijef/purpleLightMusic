@@ -7,7 +7,7 @@
       <span class="detailsName">{{prevPlayList.name}}</span>
       <span
         class="detailsTag"
-      >{{prevPlayList.tags.length > 0 ? prevPlayList.tags.join("，") : prevPlayList.tags[0]}}</span>
+      >{{prevPlayList.tags.length > 0 ? prevPlayList.tags.join("，") : ""}}</span>
       <span class="details">{{prevPlayList.description}}</span>
     </div>
     <div class="rightSongList">

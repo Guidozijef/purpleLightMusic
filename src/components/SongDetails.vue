@@ -8,7 +8,7 @@
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
       <div class="songImg" v-if="this.prevPlaySong">
-        <img :src="this.prevPlaySong.al.picUrl" alt srcset>
+        <img :src="this.prevPlaySong.al.picUrl" alt srcset />
       </div>
       <div class="songItem">
         <span class="songer">{{this.prevPlaySong.ar[0].name}}</span>
@@ -34,7 +34,7 @@
         ref="canvas"
         width="800"
         height="600"
-      >Your browser does not support Canvas tag.</canvas> -->
+      >Your browser does not support Canvas tag.</canvas>-->
     </div>
   </div>
 </template>
@@ -124,14 +124,10 @@ export default {
         case "qq":
           this.$nextTick(() => {
             this.setSongPlayUrl({
-              url: `https://v1.itooi.cn/tencent/url?id=${
-                this.$route.params.songId
-              }&quality=128`
+              url: `https://v1.itooi.cn/tencent/url?id=${this.$route.params.songId}&quality=128`
             });
             this.setSongPlayLrc({
-              lrc: `https://v1.itooi.cn/tencent/lrc?id=${
-                this.$route.params.songId
-              }`
+              lrc: `https://v1.itooi.cn/tencent/lrc?id=${this.$route.params.songId}`
             });
           });
           break;
@@ -190,7 +186,7 @@ export default {
         let height = this.$refs.musicLyric.offsetHeight;
         this.top = Math.floor(height / 35 / 2);
       }
-    },
+    }
   },
   watch: {
     currentTime(val, oldval) {

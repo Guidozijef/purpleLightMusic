@@ -123,6 +123,8 @@ export default {
       success: data => {
         this.$nextTick(() => {
           this.seachData = data.result.songs;
+          // this.setPrevPlayList({obj: });
+          // console.log(data)
         });
       }
     });
@@ -133,7 +135,7 @@ export default {
       this.seachData.forEach(item => {
         if (item.id == songId) {
           let obj = {
-            al: { picUrl: item.album.artist.img1v1Url, name: item.album.name },
+            al: { picUrl: item.artists[0].img1v1Url, name: item.album.name },
             ar: [
               {
                 name:

@@ -18,7 +18,7 @@
             @click="goSongList(item.name)"
           >
             <div class="listCover">
-              <img :src="item.img" alt srcset>
+              <img :src="item.img" alt srcset />
             </div>
             <div class="infoBox">
               <span class="listName">{{item.name}}</span>
@@ -34,15 +34,15 @@
       </div>
       <div>
         <div class="selfTitle">网易歌单</div>
-        <ul class="addList" v-if="this.importUserInfo">
+        <ul class="addList" v-if="this.importUserInfo.length">
           <li
             class="addItem"
-            v-for="item in this.importUserInfo.playlist"
+            v-for="item in this.importUserInfo"
             :key="item.id"
             @click="goImportList(item.id)"
           >
             <div class="listCover" v-if="item">
-              <img :src="item.coverImgUrl" alt srcset>
+              <img :src="item.coverImgUrl" alt srcset />
             </div>
             <div class="infoBox">
               <span class="listName">{{item.name}}</span>
@@ -57,43 +57,47 @@
         </ul>
       </div>
       <div class="addBtn" @click="importList()">
-        <span>导入网易歌单</span>
+        <span>{{!this.importUserInfo.length ? "导入网易歌单" : "退出网易歌单"}}</span>
       </div>
     </div>
-      <div class="self-right" v-if="this.importUserInfo.code || this.prevPlayList.name">
-        <div :class="titleActive ? 'titleActive' : 'infoBox'">
-          <div class="songListCover" v-if="prevPlayList">
-            <img :src="prevPlayList.coverImgUrl" alt srcset>
-          </div>
-          <div class="songListInfoBox">
-            <span class="songListName">{{prevPlayList.name}}</span>
-            <span class="songListDescription">{{prevPlayList.description}}</span>
-            <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
-              <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
-              <span calss="number" style="margin-right:5px;" v-if="prevPlayList.playCount">共播放{{prevPlayList.playCount}}次</span>
-            </div>
+    <div class="self-right" v-if="this.importUserInfo.length || this.prevPlayList.name">
+      <div :class="titleActive ? 'titleActive' : 'infoBox'">
+        <div class="songListCover" v-if="prevPlayList">
+          <img :src="prevPlayList.coverImgUrl" alt srcset />
+        </div>
+        <div class="songListInfoBox">
+          <span class="songListName">{{prevPlayList.name}}</span>
+          <span class="songListDescription">{{prevPlayList.description}}</span>
+          <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
+            <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
+            <span
+              calss="number"
+              style="margin-right:5px;"
+              v-if="prevPlayList.playCount"
+            >共播放{{prevPlayList.playCount}}次</span>
           </div>
         </div>
-        <div class="songList">
-          <ul>
-            <li style="background-color: #e0e0e0;">
-              <span class="idx"></span>
-              <span class="songName">歌曲</span>
-              <span class="songer">歌手</span>
-              <span class="songAr">专辑</span>
-            </li>
-            <li
-              v-for="(item, index) in prevPlayList.tracks"
-              :key="index"
-              :class="{bgEven :(index + 1) % 2 == 0 ? true : false}"
-            >
-              <span class="idx">{{index + 1}}</span>
-              <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
-              <span class="songer">{{item.ar[0].name}}</span>
-              <span class="songAr">{{item.al.name}}</span>
-              <div class="itemControl">
-                <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
-                <el-dropdown @command="handleCommand">
+      </div>
+      <div class="songList">
+        <ul>
+          <li style="background-color: #e0e0e0;">
+            <span class="idx"></span>
+            <span class="songName">歌曲</span>
+            <span class="songer">歌手</span>
+            <span class="songAr">专辑</span>
+          </li>
+          <li
+            v-for="(item, index) in prevPlayList.tracks"
+            :key="index"
+            :class="{bgEven :(index + 1) % 2 == 0 ? true : false}"
+          >
+            <span class="idx">{{index + 1}}</span>
+            <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
+            <span class="songer">{{item.ar[0].name}}</span>
+            <span class="songAr">{{item.al.name}}</span>
+            <div class="itemControl">
+              <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
+              <el-dropdown @command="handleCommand">
                 <span
                   class="el-dropdown-link iconfont icon-gengduo5"
                   style="cursor: pointer;margin-top:-5px;"
@@ -110,10 +114,9 @@
                   >{{addSong.name}}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              </div>
-            </li>
-          </ul>
-        </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -125,7 +128,7 @@ export default {
     return {
       addSongList: [], // 创建的歌单
       titleActive: false,
-      containerHeight: window.innerHeight - 122 + "px",
+      containerHeight: window.innerHeight - 122 + "px"
     };
   },
   computed: {
@@ -155,33 +158,37 @@ export default {
       }
     },
     importList() {
-      var uid = "1581414085";
-      this.$prompt("请输入网易云Uid", "提示", {
-        validator(value) {
-          return {
-            valid: /\d+/.test(value),
-            message: "请输入正确的网易云Uid"
-          };
-        }
-      }).then(({ result, value }) => {
-        if (result) {
-          $.ajax({
-            type: "get",
-            url: "http://api.mtnhao.com/user/playlist",
-            data: {
-              uid: value
-            },
-            dataType: "json",
-            success: data => {
-              this.$nextTick(() => {
-                this.setImportUserInfo({ data: data });
-              });
-            }
-          });
-        } else {
-          // this.$toast.message("点击了取消");
-        }
-      });
+      if (!this.importUserInfo.length) {
+        var uid = "1581414085";
+        this.$prompt("请输入网易云Uid", "提示", {
+          validator(value) {
+            return {
+              valid: /\d+/.test(value),
+              message: "请输入正确的网易云Uid"
+            };
+          }
+        }).then(({ result, value }) => {
+          if (result) {
+            $.ajax({
+              type: "get",
+              url: "https://api.mtnhao.com/user/playlist",
+              data: {
+                uid: value
+              },
+              dataType: "json",
+              success: data => {
+                this.$nextTick(() => {
+                  this.setImportUserInfo({ data: data.playlist });
+                });
+              }
+            });
+          } else {
+            // this.$toast.message("点击了取消");
+          }
+        });
+      } else {
+        this.setImportUserInfo({ data: [] });
+      }
     },
     goImportList(id) {
       $.ajax({
@@ -231,12 +238,13 @@ export default {
         if (result) {
           let obj = {
             name: value,
-            coverImgUrl:"http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1",
+            coverImgUrl:
+              "http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1",
             img:
               "http://p.qpic.cn/music_cover/aaxX4Babic4VicBPicJOwr5xmE7IYuBzNiaRLyfbDZHmatYE1EliaZeVD9Q/600?n=1",
             creator: "my",
             tracks: [],
-            trackCount: 0,
+            trackCount: 0
           };
           this.addSongList.push(obj);
           // this.setHistory(this.addSongList);
@@ -262,7 +270,7 @@ export default {
         }
       });
       // this.$message("click on item " + command);
-    },
+    }
   }
 };
 </script>
