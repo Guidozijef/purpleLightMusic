@@ -18,7 +18,7 @@
             @click="goSongList(item.name)"
           >
             <div class="listCover">
-              <img :src="item.img" alt srcset />
+              <img :src="(item.img).replace('http','https')" alt srcset />
             </div>
             <div class="infoBox">
               <span class="listName">{{item.name}}</span>
@@ -42,7 +42,7 @@
             @click="goImportList(item.id)"
           >
             <div class="listCover" v-if="item">
-              <img :src="item.coverImgUrl" alt srcset />
+              <img :src="(item.coverImgUrl)" alt srcset />
             </div>
             <div class="infoBox">
               <span class="listName">{{item.name}}</span>
@@ -63,18 +63,20 @@
     <div class="self-right" v-if="this.importUserInfo.length || this.prevPlayList.name">
       <div :class="titleActive ? 'titleActive' : 'infoBox'">
         <div class="songListCover" v-if="prevPlayList">
-          <img :src="prevPlayList.coverImgUrl" alt srcset />
+          <img :src="(prevPlayList.coverImgUrl)" alt srcset />
         </div>
         <div class="songListInfoBox">
           <span class="songListName">{{prevPlayList.name}}</span>
           <span class="songListDescription">{{prevPlayList.description}}</span>
           <div class="songListSum" v-if="!titleActive" style="margin-left:20px;">
-            <span calss="number" style="margin-right:5px;">共{{prevPlayList.trackCount}}首</span>
-            <span
-              calss="number"
-              style="margin-right:5px;"
-              v-if="prevPlayList.playCount"
-            >共播放{{prevPlayList.playCount}}次</span>
+            <span calss="number" style="margin-right:5px;">共<i style="fontWeight:700"> {{prevPlayList.trackCount}} </i>首</span>
+            <span calss="number" style="margin-right:5px;" v-if="prevPlayList.playCount">
+              共播放
+              <i
+                style="font-weight:700"
+              >{{(prevPlayList.playCount).toString().length > 4 ? `${(prevPlayList.playCount).toString().slice(0,-4)}万` : prevPlayList.playCount}}</i>
+              次
+            </span>
           </div>
         </div>
       </div>
