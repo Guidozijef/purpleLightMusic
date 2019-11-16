@@ -17,7 +17,7 @@
             :key="item.id"
             @click="goSongList(item.name)"
           >
-            <div class="listCover">
+            <div class="listCover" v-if="item.img">
               <img :src="(item.img).replace('http','https')" alt srcset />
             </div>
             <div class="infoBox">
@@ -62,8 +62,8 @@
     </div>
     <div class="self-right" v-if="this.importUserInfo.length || this.prevPlayList.name">
       <div :class="titleActive ? 'titleActive' : 'infoBox'">
-        <div class="songListCover" v-if="prevPlayList">
-          <img :src="(prevPlayList.coverImgUrl)" alt srcset />
+        <div class="songListCover" v-if="prevPlayList.coverImgUrl">
+          <img :src="(prevPlayList.coverImgUrl).replace('http','https')" alt srcset />
         </div>
         <div class="songListInfoBox">
           <span class="songListName">{{prevPlayList.name}}</span>
