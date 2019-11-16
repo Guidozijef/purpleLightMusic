@@ -99,18 +99,16 @@ export default {
           });
           $.ajax({
             type: "get",
-            url: "http://www.gequdaquan.net/gqss/api.php",
+            url: "https://api.mtnhao.com/lyric",
             data: {
-              types: "lyric",
               id: this.$route.params.songId,
-              source: "netease"
             },
-            dataType: "jsonp",
+            dataType: "json",
             success: dataRic => {
               // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
               this.$nextTick(() => {
                 // var lyric = parseLyric(dataRic.lyric);
-                this.setSongPlayLrc({ lrc: dataRic.lyric });
+                this.setSongPlayLrc({ lrc: dataRic.lrc.lyric });
                 // console.log(parseLyric(dataRic.lyric))
               });
             },

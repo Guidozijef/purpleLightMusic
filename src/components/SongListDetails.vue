@@ -74,12 +74,11 @@ export default {
   created() {
     $.ajax({
       type: "get",
-      url: "http://www.gequdaquan.net/gqss/api.php",
+      url: "https://api.mtnhao.com/playlist/detail",
       data: {
-        types: "playlist",
         id: this.$route.params.id
       },
-      dataType: "jsonp",
+      dataType: "json",
       success: jsData => {
         // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 success回调函数只能用箭头函数，不然会改变 this
         this.$nextTick(() => {

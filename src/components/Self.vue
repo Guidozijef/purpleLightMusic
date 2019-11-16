@@ -193,12 +193,11 @@ export default {
     goImportList(id) {
       $.ajax({
         type: "post",
-        url: "http://www.gequdaquan.net/gqss/api.php?",
+        url: "https://api.mtnhao.com/playlist/detail",
         data: {
-          types: "playlist",
           id: id
         },
-        dataType: "jsonp",
+        dataType: "json",
         success: data => {
           this.$nextTick(() => {
             // this.importData = data.playlist;
