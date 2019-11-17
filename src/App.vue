@@ -44,7 +44,7 @@
           placeholder="在库中搜索"
           v-model="seachValue"
           @keyup.enter="goSeach(seachValue)"
-        >
+        />
         <span class="blank"></span>
         <span class="iconfont icon-sousuo1" @click="goSeach(seachValue)"></span>
       </div>
@@ -95,7 +95,11 @@
       </div>
       <div class="minBox" v-if="this.prevPlaySong.al" @click="goShowSonging()">
         <div class="minImg">
-          <img :src="(this.prevPlaySong.al.picUrl).replace('http','https')" alt srcset>
+          <img
+            :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl : (this.prevPlaySong.al.picUrl).replace('http','https')"
+            alt
+            srcset
+          />
         </div>
         <div class="infoBox">
           <span class="prevsonger">{{this.prevPlaySong.name}}</span>

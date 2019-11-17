@@ -3,7 +3,7 @@
     <div
       class="bg"
       v-if="this.prevPlaySong"
-      :style="{backgroundImage: 'url(' + (this.prevPlaySong.al.picUrl).replace('http','https') + ')','height':containerHeight}"
+      :style="{backgroundImage: 'url(' + (this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? (this.prevPlaySong.al.picUrl) : (this.prevPlaySong.al.picUrl).replace('http','https') + ')','height':containerHeight}"
     ></div>
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
