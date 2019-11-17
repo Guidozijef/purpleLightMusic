@@ -113,7 +113,7 @@ export default {
     this.addSongList = JSON.parse(localStorage.getItem("addList"));
     $.ajax({
       type: "get",
-      url: "http://api.mtnhao.com/search",
+      url: "https://api.mtnhao.com/search",
       data: {
         offset: 0,
         limit: 30,
@@ -177,7 +177,7 @@ export default {
       if (val == "wy") {
         $.ajax({
           type: "get",
-          url: "http://api.mtnhao.com/search",
+          url: "https://api.mtnhao.com/search",
           data: {
             offset: 0,
             limit: 30,
