@@ -21,6 +21,7 @@
         </div>
       </div>
     </div>
+    
     <div class="FM-right" v-if="this.prevPlayList != {}">
       <div :class="titleActive ? 'titleActive' : 'infoBox'">
         <div class="songListCover" v-if="this.prevPlayList">
