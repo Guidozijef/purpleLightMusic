@@ -3,7 +3,7 @@
     <div
       class="bg"
       v-if="this.prevPlaySong"
-      :style="{backgroundImage: 'url(' + (this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? (this.prevPlaySong.al.picUrl) : (this.prevPlaySong.al.picUrl).replace('http','https') + ')','height':containerHeight}"
+      :style="{'backgroundImage': 'url(' + this.prevPlaySong.al.picUrl.replace('http','https') + ')','height':containerHeight}"
     ></div>
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
@@ -212,11 +212,12 @@ export default {
   height: 100%;
   .bg {
     width: 100%;
+    height: 100%;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    filter: blur(30px);
-    opacity: 0.9;
+    filter: blur(12px);
+    opacity: 0.7;
     position: fixed;
   }
   .mark {

@@ -1,5 +1,5 @@
 <template>
-  <div class="homePage-container" ref="homePage" @scroll.native="handleScroll">
+  <div class="homePage-container" ref="homePage" @scroll="handleScroll">
     <span :class="titleActive ? 'titleActive' : 'title'">{{hello}}</span>
     <div class="recommend-containter">
       <div class="history">为你推荐</div>

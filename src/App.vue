@@ -96,7 +96,7 @@
       <div class="minBox" v-if="this.prevPlaySong.al" @click="goShowSonging()">
         <div class="minImg">
           <img
-            :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl : (this.prevPlaySong.al.picUrl).replace('http','https')"
+            :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? (this.prevPlaySong.al.picUrl).replace('http','https') : this.prevPlaySong.al.picUrl"
             alt
             srcset
           />
@@ -109,7 +109,6 @@
     </div>
     <div
       class="mainContainer"
-      :style="{'width':containerWidth,'height':containerHeight}"
       ref="main"
     >
       <!-- <keep-alive> -->
@@ -138,8 +137,8 @@ export default {
       lyric: [],
       value: 0,
       playing: null,
-      containerWidth: document.body.clientWidth - 70 + "px",
-      containerHeight: window.innerHeight - 122 + "px"
+      // containerWidth: document.body.clientWidth - 70 + "px",
+      // containerHeight: window.innerHeight - 122 + "px"
     };
   },
   computed: {
@@ -654,8 +653,8 @@ export default {
     top: 52px;
     left: 70px;
     background-color: #fff;
-    // width: 1290px;
-    height: 510px;
+    width: calc(100% - 70px);
+    height: calc(100% - 122px);
     // box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.3);
     box-shadow: -5px 3px 13px rgba(0, 0, 0, 0.2);
   }

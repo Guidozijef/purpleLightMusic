@@ -1,6 +1,6 @@
 <template>
   <div class="Self-container">
-    <div class="self-left" :style="{'height':containerHeight}">
+    <div class="self-left">
       <div>
         <div class="selfTitle">
           我的歌单
@@ -39,7 +39,7 @@
             class="addItem"
             v-for="item in this.importUserInfo"
             :key="item.id"
-            @click="goImportList(item.id)"
+            @click.prevent="goImportList(item.id)"
           >
             <div class="listCover" v-if="item">
               <img :src="(item.coverImgUrl)" alt srcset />
@@ -97,14 +97,14 @@
             <span class="songName" @click="goSongDetails(item.id)">{{item.name}}</span>
             <span class="songer">{{item.ar[0].name}}</span>
             <span class="songAr">{{item.al.name}}</span>
-            <div class="itemControl">
+            <!-- <div class="itemControl">
               <span class="iconfont icon-xiayishoubofang" style="cursor: pointer;" title="下一首播放"></span>
               <el-dropdown @command="handleCommand">
                 <span
                   class="el-dropdown-link iconfont icon-gengduo5"
                   style="cursor: pointer;margin-top:-5px;"
                 >
-                  <!-- <span class="iconfont icon-gengduo5" style="cursor: pointer;margin-top:-5px;"></span> -->
+                  <span class="iconfont icon-gengduo5" style="cursor: pointer;margin-top:-5px;"></span>
                 </span>
                 <el-dropdown-menu
                   slot="dropdown"
@@ -116,7 +116,7 @@
                   >{{addSong.name}}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-            </div>
+            </div> -->
           </li>
         </ul>
       </div>
@@ -144,6 +144,7 @@ export default {
   },
   created() {
     this.addSongList = JSON.parse(localStorage.getItem("addList")) || [];
+    this.goImportList("2397931148");
   },
   methods: {
     ...mapActions([
@@ -194,11 +195,8 @@ export default {
     },
     goImportList(id) {
       $.ajax({
-        type: "post",
-        url: "https://api.mtnhao.com/playlist/detail",
-        data: {
-          id: id
-        },
+        type: "get",
+        url: "https://api.mtnhao.com/playlist/detail?id=" + id,
         dataType: "json",
         success: data => {
           this.$nextTick(() => {
@@ -283,6 +281,7 @@ export default {
     border-right: 1px solid #9b9b9b;
     overflow-y: auto;
     overflow-x: hidden;
+    height: calc(100% - 122px);
     .selfTitle {
       background-color: #fff;
       position: sticky;
