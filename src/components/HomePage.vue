@@ -5,8 +5,8 @@
       <div class="history">为你推荐</div>
       <div class="recommendBox">
         <!-- {{qq_allDataList.recomPlaylist}} -->
-        <ul class="itemBox" v-if="historyData">
-          <li
+        <slider ref="slider" :options="options" class="itemBox" v-if="historyData">
+          <slideritem
             class="item"
             v-for="item in qqAllData"
             :key="item.content_id"
@@ -15,10 +15,10 @@
             <div class="imgBox">
               <img :src="item.cover" alt />
             </div>
-            <span class="imgTitle" :title="item.title">{{item.title}}</span>
-            <span class="listenNum" :title="item.listen_num">{{item.listen_num}}</span>
-          </li>
-        </ul>
+            <!-- <span class="imgTitle" :title="item.title">{{item.title}}</span> -->
+            <!-- <span class="listenNum" :title="item.listen_num">{{item.listen_num}}</span> -->
+          </slideritem>
+        </slider>
       </div>
     </div>
     <div class="like-container">
@@ -42,21 +42,34 @@
 <script>
 // import "../../src/listen1-api.min.js"
 import { mapGetters, mapActions } from "vuex";
-
+import { slider, slideritem } from 'vue-concise-slider';
 export default {
   data() {
     return {
       hello: "",
       historyData: [],
-      titleActive: false
+      titleActive: false,
+      options: {
+       currentPage: 0
+     }
     };
+  },
+  components: {
+    slider,
+    slideritem
   },
   computed: {
     ...mapGetters(["historyList", "qq_allDataList"]),
     qqAllData() {
-      return this.qq_allDataList.recomPlaylist
-        ? this.qq_allDataList.recomPlaylist.data.v_hot
-        : [];
+      let array = this.qq_allDataList.recomPlaylist  ? this.qq_allDataList.recomPlaylist.data.v_hot : [];
+      array.forEach(ele => {
+        ele.style = {
+           'background': '#1bbc9b',
+           'width': '100%',
+           'margin-right': '20px'
+         }
+      })
+      return array;
     }
   },
   created() {
@@ -168,8 +181,8 @@ export default {
       font-weight: 700;
     }
     .recommendBox {
-      height: 300px;
-      width: 250%;
+      // height: 300px;
+      // width: 250%;
       .itemBox {
         overflow: hidden;
         margin-top: 20px;

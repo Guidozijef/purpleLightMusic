@@ -18,6 +18,7 @@
     "muse-ui-message": "^0.2.1",
     "muse-ui-toast": "^0.3.0",
     "vue": "^2.5.2",
+    "vue-concise-slider": "^3.4.4",
     "vue-router": "^3.0.1",
     "vuex": "^3.1.0"
   },

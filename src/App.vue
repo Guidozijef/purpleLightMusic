@@ -64,8 +64,15 @@
           <span class="itemBorder"></span>
         </li>
         <li class="itemControl">
-          <span class="iconfont icon-laba" style="font-size:22px;" @click="laba=!laba"></span>
-          <span class="itemBorder"></span>
+          <el-dropdown trigger="click" style="height:100%;width:100%">
+            <span class="el-dropdown-link">
+              <span class="iconfont icon-laba" style="font-size:22px;"></span>
+              <span class="itemBorder"></span>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <mu-slider class="demo-slider" @change="changeVolume" :display-value="false" :change="volume" v-model="volume" track-color="#9530a3" color="#9530a3"></mu-slider>              
+            </el-dropdown-menu>
+          </el-dropdown>
         </li>
         <li class="itemControl">
           <span
@@ -136,6 +143,7 @@ export default {
       // playTime1: 0,
       lyric: [],
       value: 0,
+      volume:0.5,
       playing: null,
       // containerWidth: document.body.clientWidth - 70 + "px",
       // containerHeight: window.innerHeight - 122 + "px"
@@ -392,9 +400,14 @@ export default {
             break;
         }
       };
+    },
+    changeVolume(value){
+      console.log(value);
+      // this.$refs.audio.volume = this.volume;
     }
   },
   mounted() {
+    this.$refs.audio.volume = 0.5;
     // 自动播放下一首
     this.$refs.audio.onended = () => {
       !this.loop ? this.next() : null;

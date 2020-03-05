@@ -144,7 +144,7 @@ export default {
   },
   created() {
     this.addSongList = JSON.parse(localStorage.getItem("addList")) || [];
-    this.goImportList("2397931148");
+    // this.goImportList("2397931148"); 
   },
   methods: {
     ...mapActions([

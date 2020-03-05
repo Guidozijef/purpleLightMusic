@@ -3,12 +3,12 @@
     <div
       class="bg"
       v-if="this.prevPlaySong"
-      :style="{'backgroundImage': 'url(' + this.prevPlaySong.al.picUrl.replace('http','https') + ')','height':containerHeight}"
+      :style="{backgroundImage: 'url(' + (this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? (this.prevPlaySong.al.picUrl).replace('http','https') : (this.prevPlaySong.al.picUrl)  + ')','height':containerHeight}"
     ></div>
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
       <div class="songImg" v-if="this.prevPlaySong">
-        <img :src="this.prevPlaySong.al.picUrl.replace('http','https')" alt srcset />
+        <img :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl.replace('http','https') : this.prevPlaySong.al.picUrl" alt srcset />
       </div>
       <div class="songItem">
         <span class="songer">{{this.prevPlaySong.ar[0].name}}</span>
