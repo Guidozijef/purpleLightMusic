@@ -2,13 +2,12 @@
   <div class="songDetails-container">
     <div
       class="bg"
-      v-if="this.prevPlaySong"
-      :style="{backgroundImage: 'url(' + (this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? (this.prevPlaySong.al.picUrl).replace('http','https') : (this.prevPlaySong.al.picUrl)  + ')','height':containerHeight}"
+      :style="{'backgroundImage': 'url(' + bgImg+ ')','height':containerHeight}"
     ></div>
     <div class="mark" :style="{'width':containerWidth,'height':containerHeight}"></div>
     <div class="songInfo">
       <div class="songImg" v-if="this.prevPlaySong">
-        <img :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl.replace('http','https') : this.prevPlaySong.al.picUrl" alt srcset />
+        <img :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl : this.prevPlaySong.al.picUrl.replace('http','https')" alt srcset />
       </div>
       <div class="songItem">
         <span class="songer">{{this.prevPlaySong.ar[0].name}}</span>
@@ -66,6 +65,9 @@ export default {
     //   return `transform :translate3d(0, ${-35 *
     //     this.value}px, 0)`
     // },
+    bgImg(){
+      return  (this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl : (this.prevPlaySong.al.picUrl).replace('http','https');
+    },
     currentTime1() {
       return parseInt(this.currentTime);
     },
@@ -108,7 +110,7 @@ export default {
               // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
               this.$nextTick(() => {
                 // var lyric = parseLyric(dataRic.lyric);
-                this.setSongPlayLrc({ lrc: dataRic.lrc.lyric });
+                this.setSongPlayLrc({ lrc: dataRic.lrc.lyric || {} });
                 // console.log(parseLyric(dataRic.lyric))
               });
             },
@@ -117,6 +119,17 @@ export default {
                 this.noLyric = true;
               });
             }
+          });
+          $.ajax({
+            type: "get",
+            url: "https://api.mtnhao.com/song/detail?ids=" + this.$route.params.songId,
+            dataType: "json",
+            success: data => {
+              // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
+              this.$nextTick(() => {
+                this.setPrevPlaySong({obj:data.songs[0]})
+              });
+            },
           });
           break;
         case "qq":
@@ -193,12 +206,14 @@ export default {
           const element = this.songPlayLrc[index];
           // var css = element.times < parseInt(val) < this.songPlayLrc[index+1].times ? true : false;
           if (
-            element.times <= parseInt(val) &&
-            parseInt(val) <= this.songPlayLrc[index + 1].times
+            element.times <= val && val <= this.songPlayLrc[index + 1].times
           ) {
-            this.value = index >= 4 ? index : 0;
+            // this.value = index >= 4 ? index : 0;
             this.lyricIndex = index;
           }
+          // if(val > element.times){
+          //   this.lyricIndex = index;
+          // }
         }
       }
     }

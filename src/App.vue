@@ -70,7 +70,7 @@
               <span class="itemBorder"></span>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <mu-slider class="demo-slider" @change="changeVolume" :display-value="false" :change="volume" v-model="volume" track-color="#9530a3" color="#9530a3"></mu-slider>              
+              <mu-slider class="demo-slider" @change="changeVolume" :display-value="false" :value="volume" track-color="#9530a3" color="#9530a3"></mu-slider>              
             </el-dropdown-menu>
           </el-dropdown>
         </li>
@@ -97,13 +97,16 @@
         </li>
       </ul>
       <div class="musicSilder">
-        <mu-slider class="demo-slider" v-model="playTime" color="#9530a3"></mu-slider>
+        <mu-slider class="demo-slider" :display-value="false" @change="changePlayTime" v-model="playTime" color="#9530a3"></mu-slider>
         <!-- <el-slider v-model="this.playTime"></el-slider> -->
+      </div>
+      <div class="musicBarTime">
+        {{ currentTime | format }}/{{ duration % 3600 | format }}
       </div>
       <div class="minBox" v-if="this.prevPlaySong.al" @click="goShowSonging()">
         <div class="minImg">
           <img
-            :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? (this.prevPlaySong.al.picUrl).replace('http','https') : this.prevPlaySong.al.picUrl"
+            :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl : (this.prevPlaySong.al.picUrl).replace('http','https')"
             alt
             srcset
           />
@@ -143,7 +146,7 @@ export default {
       // playTime1: 0,
       lyric: [],
       value: 0,
-      volume:0.5,
+      volume:0.4,
       playing: null,
       // containerWidth: document.body.clientWidth - 70 + "px",
       // containerHeight: window.innerHeight - 122 + "px"
@@ -164,6 +167,14 @@ export default {
     //   return `width:${document.body.clientWidth-70} + px`
     // }
   },
+  filters:{
+    // 时间格式化
+    format(value){
+      let minute = Math.floor(value / 60) +"";
+      let second = Math.floor(value % 60) +"";
+      return `${minute.padStart(2,0)}:${second.padStart(2,0)}`
+    }
+  },
   created() {
     // 设置audio元素
     this.$nextTick(() => {
@@ -180,6 +191,9 @@ export default {
       "setSongPlayLrc",
       "setHistory"
     ]),
+    changePlayTime(val){
+      console.log(val);
+    },
     // 去首页
     goHome() {
       this.$router.push({ name: "homePage" });
@@ -407,7 +421,7 @@ export default {
     }
   },
   mounted() {
-    this.$refs.audio.volume = 0.5;
+    this.$refs.audio.volume = 0.4;
     // 自动播放下一首
     this.$refs.audio.onended = () => {
       !this.loop ? this.next() : null;
@@ -603,6 +617,13 @@ export default {
       position: relative;
       top: -38px;
       left: 500px;
+      width: 430px;
+      height: 40px;
+    }
+    .musicBarTime{
+      position: relative;
+      top: -38px;
+      left: 950px;
       height: 40px;
     }
     .minBox {

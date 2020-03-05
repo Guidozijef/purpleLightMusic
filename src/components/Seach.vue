@@ -132,23 +132,23 @@ export default {
   methods: {
     ...mapActions(["setPrevPlaySong", "setPrevPlayList"]),
     goSongDetails(songId) {
-      this.seachData.forEach(item => {
-        if (item.id == songId) {
-          let obj = {
-            al: { picUrl: item.artists[0].img1v1Url, name: item.album.name },
-            ar: [
-              {
-                name:
-                  item.artists.length && item.artists.length == 2
-                    ? item.artists[0].name + "/" + item.artists[1].name
-                    : item.artists[0].name
-              }
-            ],
-            name: item.name
-          };
-          this.setPrevPlaySong({ obj: obj });
-        }
-      });
+      // this.seachData.forEach(item => {
+      //   if (item.id == songId) {
+      //     let obj = {
+      //       al: { picUrl: item.artists[0].img1v1Url, name: item.album.name },
+      //       ar: [
+      //         {
+      //           name:
+      //             item.artists.length && item.artists.length == 2
+      //               ? item.artists[0].name + "/" + item.artists[1].name
+      //               : item.artists[0].name
+      //         }
+      //       ],
+      //       name: item.name
+      //     };
+      //     this.setPrevPlaySong({ obj: obj });
+      //   }
+      // });
       this.$router.push({
         name: "songDetails",
         params: { songId: this.type + "_" + songId }
