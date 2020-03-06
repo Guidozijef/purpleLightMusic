@@ -106,7 +106,7 @@
       <div class="minBox" v-if="this.prevPlaySong.al" @click="goShowSonging()">
         <div class="minImg">
           <img
-            :src="(this.prevPlaySong.al.picUrl).slice(0,4) == 'http' ? this.prevPlaySong.al.picUrl.replace('http','https') : this.prevPlaySong.al.picUrl"
+            :src="(this.prevPlaySong.al.picUrl).slice(0,5) == 'https' ? this.prevPlaySong.al.picUrl : this.prevPlaySong.al.picUrl.replace('http','https')"
             alt
             srcset
           />
