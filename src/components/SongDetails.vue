@@ -73,7 +73,7 @@ export default {
     },
     lyricTop() {
       // return `top: ${-35 * (this.value - 3)}px`;
-      return `transform :translate3d(0, ${-36 * (this.lyricIndex - this.top)}px, 0)`;
+      return `transform :translate3d(0, ${-36 * (this.lyricIndex + 1 - this.top)}px, 0)`;
     }
   },
   created() {
@@ -212,7 +212,7 @@ export default {
             element.times <= val && val <= this.songPlayLrc[index + 1].times
           ) {
             // this.value = index >= 4 ? index : 0;
-            this.lyricIndex = index + 1;
+            this.lyricIndex = index;
           }
           // if(val > element.times){
           //   this.lyricIndex = index;
