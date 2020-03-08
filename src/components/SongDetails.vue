@@ -73,8 +73,7 @@ export default {
     },
     lyricTop() {
       // return `top: ${-35 * (this.value - 3)}px`;
-      return `transform :translate3d(0, ${-35 *
-        (this.lyricIndex - this.top)}px, 0)`;
+      return `transform :translate3d(0, ${-35 * (this.lyricIndex - this.top)}px, 0)`;
     }
   },
   created() {
@@ -110,7 +109,11 @@ export default {
               // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
               this.$nextTick(() => {
                 // var lyric = parseLyric(dataRic.lyric);
-                this.setSongPlayLrc({ lrc: dataRic.lrc.lyric || {} });
+                if(dataRic.lrc.lyric){
+                  this.setSongPlayLrc({ lrc: dataRic.lrc.lyric});
+                }else{
+                  this.noLyric = true;
+                }
                 // console.log(parseLyric(dataRic.lyric))
               });
             },
@@ -209,7 +212,7 @@ export default {
             element.times <= val && val <= this.songPlayLrc[index + 1].times
           ) {
             // this.value = index >= 4 ? index : 0;
-            this.lyricIndex = index;
+            this.lyricIndex = index + 1;
           }
           // if(val > element.times){
           //   this.lyricIndex = index;

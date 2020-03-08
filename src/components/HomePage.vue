@@ -166,6 +166,7 @@ export default {
     width: 100%;
     background-color: #f8f8f8;
     opacity: 0.95;
+    z-index: 2;
   }
   .title {
     transition: all 1s ease;
