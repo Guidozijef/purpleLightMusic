@@ -246,7 +246,18 @@ export default {
         this.prevPlayList.tracks.forEach((item, index) => {
           if (prevPlayId == item.id) {
             var ele = index <= 0 ? item : this.prevPlayList.tracks[index - 1];
-            this.setPrevPlaySong({ obj: ele });
+            // this.setPrevPlaySong({ obj: ele });
+            $.ajax({
+              type: "get",
+              url: "https://api.mtnhao.com/song/detail?ids=" + ele.id,
+              dataType: "json",
+              success: data => {
+                // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
+                this.$nextTick(() => {
+                  this.setPrevPlaySong({obj:data.songs[0]})
+                });
+              },
+            });
             $.ajax({
               type: "get",
               url: "https://api.imjad.cn/cloudmusic/?type=song&id=" + ele.id,
@@ -316,8 +327,19 @@ export default {
                 index >= this.prevPlayList.tracks.length - 1
                   ? item
                   : this.prevPlayList.tracks[index + 1];
-              this.setPrevPlaySong({ obj: ele }); // 改变当前播放的歌曲信息
+              // this.setPrevPlaySong({ obj: ele }); // 改变当前播放的歌曲信息
               // console.log(this.prevPlayList.tracks[index + 1]);
+              $.ajax({
+                type: "get",
+                url: "https://api.mtnhao.com/song/detail?ids=" + ele.id,
+                dataType: "json",
+                success: data => {
+                  // 注意使用 this.$nextTick(()=>{} 异步加载数据的时候 回调函数只能用箭头函数，不然会改变 this
+                  this.$nextTick(() => {
+                    this.setPrevPlaySong({obj:data.songs[0]})
+                  });
+                },
+              });
               $.ajax({
                 type: "get",
                 url: "https://api.imjad.cn/cloudmusic/?type=song&id=" + ele.id,
