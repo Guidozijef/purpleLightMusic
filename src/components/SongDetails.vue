@@ -73,7 +73,7 @@ export default {
     },
     lyricTop() {
       // return `top: ${-35 * (this.value - 3)}px`;
-      return `transform :translate3d(0, ${-35 * (this.lyricIndex - this.top)}px, 0)`;
+      return `transform :translate3d(0, ${-36 * (this.lyricIndex - this.top)}px, 0)`;
     }
   },
   created() {
@@ -198,7 +198,7 @@ export default {
     clacTop() {
       if (this.$refs.musicLyric) {
         let height = this.$refs.musicLyric.offsetHeight;
-        this.top = Math.floor(height / 35 / 2);
+        this.top = Math.floor(height / 36 / 2);
       }
     }
   },
