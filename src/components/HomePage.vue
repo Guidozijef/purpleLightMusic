@@ -104,7 +104,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["setPrevPlaySong", "set_QQ_allDataList"]),
+    ...mapActions(["setPrevPlaySong", "set_QQ_allDataList", "setPrevPlayList"]),
     // 获取所有的请求音乐
     getQQAllData() {
       $.ajax({
@@ -123,6 +123,7 @@ export default {
       });
     },
     goSongDetails(songId) {
+      this.setPrevPlayList({obj:this.historyList});
       this.historyList.forEach(item => {
         if (item.id == songId) {
           this.setPrevPlaySong({ obj: item });
