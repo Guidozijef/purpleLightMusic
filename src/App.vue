@@ -63,17 +63,13 @@
           <span class="iconfont icon-shangyishou1"></span>
           <span class="itemBorder"></span>
         </li>
-        <li class="itemControl">
-          <el-dropdown trigger="click" style="height:100%;width:100%">
-            <span class="el-dropdown-link">
-              <span class="iconfont icon-laba" style="font-size:22px;"></span>
-              <span class="itemBorder"></span>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <mu-slider class="demo-slider" @change="changeVolume" :display-value="false" :value="volume" track-color="#9530a3" color="#9530a3"></mu-slider>              
-            </el-dropdown-menu>
-          </el-dropdown>
+        <li class="itemControl" @click="target = false">
+          <span class="iconfont icon-laba" v-show="target" style="font-size:22px;"></span>
+          <span class="itemBorder" v-show="target"></span>
         </li>
+        <div class="volume-slider" v-show="!target">
+          <mu-slider @change="changeVolume" :display-value="false" v-model="volume" color="#9530a3"></mu-slider>              
+        </div>
         <li class="itemControl">
           <span
             class="iconfont"
@@ -97,7 +93,7 @@
         </li>
       </ul>
       <div class="musicSilder">
-        <mu-slider class="demo-slider" :display-value="false" @change="changePlayTime" v-model="playTime" color="#9530a3"></mu-slider>
+        <mu-slider class="demo-slider" :display-value="false" @change="changePlayTime" :value="playTime" color="#9530a3"></mu-slider>
         <!-- <el-slider v-model="this.playTime"></el-slider> -->
       </div>
       <div class="musicBarTime">
@@ -146,7 +142,8 @@ export default {
       // playTime1: 0,
       lyric: [],
       value: 0,
-      volume:0.4,
+      volume:30,
+      target:true,
       playing: null,
       // containerWidth: document.body.clientWidth - 70 + "px",
       // containerHeight: window.innerHeight - 122 + "px"
@@ -162,7 +159,7 @@ export default {
     ]),
     playTime: function() {
       return parseInt(this.currentTime * (100 / this.duration)); //将当前时间转换为进度条显示
-    }
+    },
     // containerWidth: function(){
     //   return `width:${document.body.clientWidth-70} + px`
     // }
@@ -192,7 +189,8 @@ export default {
       "setHistory"
     ]),
     changePlayTime(val){
-      console.log(val);
+      this.$refs.audio.currentTime = (val*this.duration)/100; // 设置从什么时候开始播放
+      this.setCurrentTime({ data: (val*this.duration)/100 }); //获取audio当前播放时间
     },
     // 去首页
     goHome() {
@@ -404,7 +402,7 @@ export default {
             this.prev();
             break;
           case 38: // 音量加Ctrl + Up
-            let plus = Number((this.volume += 0.1).toFixed(1));
+            let plus = Number((this.$refs.audio.volume += 0.1).toFixed(1));
             if (plus > 1) {
               plus = 1;
             }
@@ -414,7 +412,7 @@ export default {
             this.next();
             break;
           case 40: // 音量减Ctrl + Down
-            let reduce = Number((this.volume -= 0.1).toFixed(1));
+            let reduce = Number((this.$refs.audio.volume -= 0.1).toFixed(1));
             if (reduce < 0) {
               reduce = 0;
             }
@@ -427,12 +425,16 @@ export default {
       };
     },
     changeVolume(value){
-      console.log(value);
-      // this.$refs.audio.volume = this.volume;
+      this.$refs.audio.volume = value/100;
     }
   },
   mounted() {
-    this.$refs.audio.volume = 0.4;
+    document.addEventListener("click",(e) => {
+      if(e.target.className != "iconfont icon-laba"){
+        this.target = true;
+      }
+    })
+    this.$refs.audio.volume = 0.3;
     // 自动播放下一首
     this.$refs.audio.onended = () => {
       !this.loop ? this.next() : null;
@@ -462,6 +464,9 @@ export default {
         this.setHistory(this.prevPlaySong);
       }
     };
+  },
+  beforeDestroy(){
+    document.removeEventListener("click");
   },
   watch: {
     // currentSong() {
@@ -622,6 +627,14 @@ export default {
           height: 45px;
           border-radius: 35px;
         }
+       
+      }
+      .volume-slider{
+        position: absolute;
+        top: 22px;
+        z-index: 999;
+        left: 310px;
+        width: 60px;
       }
     }
     .musicSilder {
