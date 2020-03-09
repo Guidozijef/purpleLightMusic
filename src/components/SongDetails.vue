@@ -208,9 +208,7 @@ export default {
         for (let index = 0; index < this.songPlayLrc.length; index++) {
           const element = this.songPlayLrc[index];
           // var css = element.times < parseInt(val) < this.songPlayLrc[index+1].times ? true : false;
-          if (
-            element.times <= val && val <= this.songPlayLrc[index + 1].times
-          ) {
+          if (element.times <= val) {
             // this.value = index >= 4 ? index : 0;
             this.lyricIndex = index;
           }
