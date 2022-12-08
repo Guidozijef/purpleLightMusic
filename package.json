@@ -13,7 +13,7 @@
     "@suen/music-api": "^1.1.9",
     "axios": "^0.18.0",
     "element-ui": "^2.9.1",
-    "jquery": "^3.4.0",
+    "jquery": "^3.5.0",
     "muse-ui": "^3.0.2",
     "muse-ui-message": "^0.2.1",
     "muse-ui-toast": "^0.3.0",
